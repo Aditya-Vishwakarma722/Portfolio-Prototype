@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codes Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #0a0a0a;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Canvas is the animated beams background */
+        #beamsCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            /* CSS blur is GPU-composited — much cheaper than ctx.filter */
+            filter: blur(15px);
+            z-index: 0;
+            /* Force GPU compositing layer */
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        /* Subtle pulsing overlay (matches the motion.div in the original) */
+        #overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.05);
+            /* Reduced from 50px — large blur radii are very GPU-expensive */
+            backdrop-filter: blur(8px);
+            z-index: 1;
+            pointer-events: none;
+            animation: pulse-overlay 10s ease-in-out infinite;
+            will-change: opacity;
+        }
+
+        @keyframes pulse-overlay {
+
+            0%,
+            100% {
+                opacity: 0.05;
+            }
+
+            50% {
+                opacity: 0.15;
+            }
+        }
+
+        /* ===== FOCUS STATE & ACCORDION ===== */
+        .focus-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            z-index: 1;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .cards-container.has-expanded~.focus-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .cards-container {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 0 60px;
+            z-index: 2;
+            width: 100%;
+            transition: gap 0.6s ease;
+        }
+
+        .glow-card {
+            flex: 1;
+            min-width: 0;
+            /* Important for flex-shrink */
+            height: clamp(300px, 25vw, 480px);
+            transition: flex 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.6s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .glow-card.expanded {
+            flex: 5;
+            z-index: 10;
+            transform: translateY(-20px);
+            animation: floating-focused 4s ease-in-out infinite;
+        }
+
+        .cards-container.has-expanded .glow-card:not(.expanded) {
+            flex: 0.4;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        @keyframes floating-focused {
+
+            0%,
+            100% {
+                transform: translateY(-20px);
+            }
+
+            50% {
+                transform: translateY(-35px);
+            }
+        }
+
+        /* Back link */
+        .back-link {
+            position: absolute;
+            top: 32px;
+            left: 36px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            padding: 10px 20px;
+            /* Glassy rectangle */
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(16px) saturate(160%);
+            -webkit-backdrop-filter: blur(16px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            transition: background 0.25s ease,
+                border-color 0.25s ease,
+                transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.25s ease;
+            z-index: 10;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.13);
+            border-color: rgba(255, 255, 255, 0.28);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        }
+
+        /* ===== FLOATING DOCK ===== */
+        .dock-container {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            width: 100%;
+            max-width: 900px;
+            height: 90px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 18px;
+        }
+
+        .dock {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            border-radius: 20px;
+            background: rgba(10, 10, 10, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            animation: dock-float 4s ease-in-out infinite;
+            will-change: transform;
+        }
+
+        @keyframes dock-float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(4px);
+            }
+        }
+
+        .dock-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.85);
+            transition: background 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-decoration: none;
+        }
+
+        .dock-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1) translateY(-2px);
+        }
+
+        .dock-btn:active {
+            transform: scale(0.95);
+        }
+
+        .dock-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            pointer-events: none;
+        }
+
+        .dock-tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(30, 30, 30, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            padding: 3px 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .dock-btn:hover .dock-tooltip {
+            opacity: 1;
+        }
+
+        /* ===== SPOTLIGHT CARDS ===== */
+        .cards-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: clamp(0.5rem, 1.5vw, 1.5rem);
+            z-index: 5;
+            perspective: 1000px;
+            width: 100%;
+            padding: 0 2rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glow-card {
+            --base: 220;
+            --spread: 200;
+            --radius: 14;
+            --border: 3;
+            --backdrop: rgba(255, 255, 255, 0.05);
+            --backup-border: var(--backdrop);
+            --size: 200;
+            --outer: 1;
+            --border-size: calc(var(--border, 2) * 1px);
+            --spotlight-size: calc(var(--size, 150) * 1px);
+            --hue: calc(var(--base) + (var(--xp, 0) * var(--spread, 0)));
+
+            width: clamp(200px, 18vw, 350px);
+            height: clamp(300px, 25vw, 480px);
+            flex-shrink: 1;
+            border-radius: calc(var(--radius) * 1px);
+            position: relative;
+            background-color: var(--backdrop);
+            background-image: radial-gradient(var(--spotlight-size) var(--spotlight-size) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px),
+                    hsl(var(--hue, 210) 100% 70% / 0.1), transparent);
+            background-attachment: scroll;
+            border: var(--border-size) solid var(--backup-border);
+            backdrop-filter: blur(10px);
+            display: grid;
+            grid-template-rows: 1fr auto;
+            padding: 1.5rem;
+            color: white;
+            box-shadow: 0 1rem 2rem -1rem black;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .glow-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+        }
+
+        .glow-card::before,
+        .glow-card::after {
+            pointer-events: none;
+            content: "";
+            position: absolute;
+            inset: calc(var(--border-size) * -1);
+            border: var(--border-size) solid transparent;
+            border-radius: calc(var(--radius) * 1px);
+            background-attachment: scroll;
+            background-size: calc(100% + (2 * var(--border-size))) calc(100% + (2 * var(--border-size)));
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+            mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
+            mask-clip: padding-box, border-box;
+            mask-composite: intersect;
+            -webkit-mask-composite: destination-in;
+            /* Support for older webkit */
+        }
+
+        .glow-card::before {
+            background-image: radial-gradient(calc(var(--spotlight-size) * 0.8) calc(var(--spotlight-size) * 0.8) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px),
+                    hsl(var(--hue, 210) 100% 60% / 1), transparent 100%);
+            filter: brightness(2.5);
+        }
+
+        .glow-card::after {
+            background-image: radial-gradient(calc(var(--spotlight-size) * 0.4) calc(var(--spotlight-size) * 0.4) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px),
+                    rgba(255, 255, 255, 0.6), transparent 100%);
+        }
+
+        .glow-card .glow-overlay {
+            position: absolute;
+            inset: 0;
+            will-change: filter;
+            opacity: var(--outer, 1);
+            border-radius: calc(var(--radius) * 1px);
+            pointer-events: none;
+            filter: blur(20px);
+            background: none;
+            border: none;
+        }
+
+        .glow-card .glow-content {
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            height: 100%;
+        }
+
+        .glow-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .glow-card p {
+            font-size: clamp(0.7rem, 0.85vw, 0.85rem);
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.4;
+        }
+
+        .glow-icon {
+            width: 42px;
+            height: 42px;
+            margin-bottom: 1rem;
+            color: hsl(var(--hue, 210) 100% 75%);
+            filter: drop-shadow(0 0 8px hsl(var(--hue, 210) 100% 60% / 0.5));
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .glow-card:hover .glow-icon {
+            transform: scale(1.1) translateY(-5px);
+            filter: drop-shadow(0 0 12px hsl(var(--hue, 210) 100% 70% / 0.8));
+        }
+
+        /* Responsive scaling adjustments */
+        @media (max-height: 600px) {
+            .glow-card {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="beamsCanvas"></canvas>
+    <div id="overlay"></div>
+    <div class="focus-overlay" id="focusOverlay"></div>
+    <a href="../Prototype.html" class="back-link">← Back to Portfolio</a>
+
+    <div class="cards-container">
+        <div class="glow-card" style="--base: 220;">
+            <div class="glow-overlay"></div>
+            <div class="glow-content">
+                <svg class="glow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3v18h18" />
+                    <path d="M7 16V12" />
+                    <path d="M11 16V8" />
+                    <path d="M15 16V10" />
+                </svg>
+                <h3>Stats</h3>
+                <p>Key metrics and analytics for coding performance.</p>
+            </div>
+        </div>
+        <div class="glow-card" style="--base: 280;">
+            <div class="glow-overlay"></div>
+            <div class="glow-content">
+                <svg class="glow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z" />
+                    <path d="m10 11-2 2 2 2" />
+                    <path d="m14 11 2 2-2 2" />
+                </svg>
+                <h3>Projects</h3>
+                <p>View all active and completed coding projects.</p>
+            </div>
+        </div>
+        <div class="glow-card" style="--base: 0;">
+            <div class="glow-overlay"></div>
+            <div class="glow-content">
+                <svg class="glow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+                <h3>Resume</h3>
+                <p>Professional experience, skills, and certifications.</p>
+            </div>
+        </div>
+        <div class="glow-card" style="--base: 120;">
+            <div class="glow-overlay"></div>
+            <div class="glow-content">
+                <svg class="glow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m18 16 4-4-4-4" />
+                    <path d="m6 8-4 4 4 4" />
+                    <path d="m14.5 4-5 16" />
+                </svg>
+                <h3>Codes</h3>
+                <p>Curated codebases and repository highlights.</p>
+            </div>
+        </div>
+        <div class="glow-card" style="--base: 30;">
+            <div class="glow-overlay"></div>
+            <div class="glow-content">
+                <svg class="glow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <line x1="10" y1="9" x2="8" y2="9" />
+                </svg>
+                <h3>Blog</h3>
+                <p>Articles, updates, and development insights.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Dock (dock-two port) -->
+    <div class="dock-container">
+        <nav class="dock" aria-label="Social links">
+
+            <!-- GitHub -->
+            <a href="https://github.com/Aditya-Vishwakarma722" target="_blank" class="dock-btn">
+                <div class="dock-tooltip">GitHub</div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path
+                        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                </svg>
+            </a>
+
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/aditya-vishwakarma-b700b2331/" target="_blank" class="dock-btn">
+                <div class="dock-tooltip">LinkedIn</div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                    <rect x="2" y="9" width="4" height="12" />
+                    <circle cx="4" cy="4" r="2" />
+                </svg>
+            </a>
+
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/psy.ko_070/" target="_blank" class="dock-btn">
+                <div class="dock-tooltip">Instagram</div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                </svg>
+            </a>
+
+            <!-- Telegram -->
+            <a href="https://t.me/PSYK07" target="_blank" class="dock-btn">
+                <div class="dock-tooltip">Telegram</div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+            </a>
+
+        </nav>
+    </div>
+
+    <script>
+        (function () {
+            // alpha:false disables alpha channel compositing = faster fill operations
+            const canvas = document.getElementById('beamsCanvas');
+            const ctx = canvas.getContext('2d', { alpha: false });
+            const TOTAL_BEAMS = 15; // Reduced from 30 for better performance
+            const INTENSITY = 1;
+
+            let beams = [];
+            let animFrame;
+
+            function createBeam(w, h) {
+                const angle = -35 + Math.random() * 10;
+                return {
+                    x: Math.random() * w * 1.5 - w * 0.25,
+                    y: Math.random() * h * 1.5 - h * 0.25,
+                    width: 30 + Math.random() * 60,
+                    length: h * 2.5,
+                    angle: angle,
+                    speed: 0.6 + Math.random() * 1.2,
+                    opacity: 0.12 + Math.random() * 0.16,
+                    hue: 190 + Math.random() * 70,
+                    pulse: Math.random() * Math.PI * 2,
+                    pulseSpeed: 0.02 + Math.random() * 0.03,
+                };
+            }
+
+            function resetBeam(beam, index) {
+                const w = canvas.width;
+                const h = canvas.height;
+                const column = index % 3;
+                const spacing = w / 3;
+                beam.y = h + 100;
+                beam.x = column * spacing + spacing / 2 + (Math.random() - 0.5) * spacing * 0.5;
+                beam.width = 100 + Math.random() * 100;
+                beam.speed = 0.5 + Math.random() * 0.4;
+                beam.hue = 190 + (index * 70) / TOTAL_BEAMS;
+                beam.opacity = 0.2 + Math.random() * 0.1;
+                return beam;
+            }
+
+            function drawBeam(beam) {
+                ctx.save();
+                ctx.translate(beam.x, beam.y);
+                ctx.rotate(beam.angle * Math.PI / 180);
+
+                const po = beam.opacity * (0.8 + Math.sin(beam.pulse) * 0.2) * INTENSITY;
+                const grad = ctx.createLinearGradient(0, 0, 0, beam.length);
+                grad.addColorStop(0, `hsla(${beam.hue},85%,65%,0)`);
+                grad.addColorStop(0.1, `hsla(${beam.hue},85%,65%,${po * 0.5})`);
+                grad.addColorStop(0.4, `hsla(${beam.hue},85%,65%,${po})`);
+                grad.addColorStop(0.6, `hsla(${beam.hue},85%,65%,${po})`);
+                grad.addColorStop(0.9, `hsla(${beam.hue},85%,65%,${po * 0.5})`);
+                grad.addColorStop(1, `hsla(${beam.hue},85%,65%,0)`);
+
+                ctx.fillStyle = grad;
+                ctx.fillRect(-beam.width / 2, 0, beam.width, beam.length);
+                ctx.restore();
+            }
+
+            function resize() {
+                // Cap DPR at 1.5 — reduces canvas pixel count by ~55% on Retina/2x screens
+                const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                canvas.width = w * dpr;
+                canvas.height = h * dpr;
+                canvas.style.width = w + 'px';
+                canvas.style.height = h + 'px';
+                ctx.scale(dpr, dpr);
+                beams = Array.from({ length: TOTAL_BEAMS }, () => createBeam(w, h));
+            }
+
+            function animate() {
+                const w = canvas.width / (Math.min(window.devicePixelRatio || 1, 1.5));
+                const h = canvas.height / (Math.min(window.devicePixelRatio || 1, 1.5));
+                // Fill with solid black — required since alpha:false removes transparency
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fillRect(0, 0, w, h);
+                // NO ctx.filter here — blur is handled by CSS (GPU-composited, much cheaper)
+
+                beams.forEach((beam, i) => {
+                    beam.y -= beam.speed;
+                    beam.pulse += beam.pulseSpeed;
+                    if (beam.y + beam.length < -100) resetBeam(beam, i);
+                    drawBeam(beam);
+                });
+
+                animFrame = requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            animate();
+
+            // Pointer tracking for Spotlight Cards
+            const cards = document.querySelectorAll('.glow-card');
+            document.addEventListener('pointermove', (e) => {
+                const { clientX: x, clientY: y } = e;
+
+                // Global factors for color shift
+                const xp = (x / window.innerWidth).toFixed(2);
+                const yp = (y / window.innerHeight).toFixed(2);
+                document.documentElement.style.setProperty('--xp', xp);
+                document.documentElement.style.setProperty('--yp', yp);
+
+                // Local card coordinates for glow center
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const localX = x - rect.left;
+                    const localY = y - rect.top;
+                    card.style.setProperty('--x', localX.toFixed(2));
+                    card.style.setProperty('--y', localY.toFixed(2));
+                });
+            });
+            // Accordion Interaction
+            const focusOverlay = document.getElementById('focusOverlay');
+            const container = document.querySelector('.cards-container');
+
+            cards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isExpanded = card.classList.contains('expanded');
+
+                    // Reset all
+                    cards.forEach(c => c.classList.remove('expanded'));
+                    container.classList.remove('has-expanded');
+
+                    if (!isExpanded) {
+                        card.classList.add('expanded');
+                        container.classList.add('has-expanded');
+                    }
+                });
+            });
+
+            // Collapse on background click
+            document.addEventListener('click', () => {
+                cards.forEach(c => c.classList.remove('expanded'));
+                container.classList.remove('has-expanded');
+            });
+
+            focusOverlay.addEventListener('click', (e) => {
+                e.stopPropagation();
+                cards.forEach(c => c.classList.remove('expanded'));
+                container.classList.remove('has-expanded');
+            });
+        })();
+    </script>
+</body>
+
+</html>
