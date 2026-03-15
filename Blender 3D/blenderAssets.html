@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blender Projects | Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0c;--text:#e8e8ec;--muted:#7a7a8a;--dim:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.08);--orange:#f97316;--blue:#3b82f6;--green:#10b981;--purple:#a855f7;--mono:'JetBrains Mono',monospace;--logo:'Outfit',sans-serif}
+body{font-family:var(--mono);color:var(--text);background:var(--bg);min-height:100vh;overflow-x:hidden}
+#pillar-bg{position:fixed;inset:0;z-index:0;pointer-events:none;mix-blend-mode:screen}
+#pillar-bg canvas{width:100%!important;height:100%!important;position:absolute;top:0;left:0}
+.bgo{position:fixed;inset:0;z-index:1;pointer-events:none;background:
+  radial-gradient(ellipse 80% 50% at 20% 80%,rgba(82,39,255,0.08) 0%,transparent 60%),
+  radial-gradient(ellipse 60% 40% at 80% 20%,rgba(255,159,252,0.05) 0%,transparent 55%),
+  radial-gradient(ellipse 100% 80% at 50% 50%,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.92) 100%)}
+.topbar{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:1.6rem 4%;border-bottom:1px solid var(--border);max-width:1300px;margin:0 auto}
+.topbar-left{display:flex;align-items:center;gap:1.2rem}
+.breadcrumb{font-size:0.78rem;color:var(--muted);letter-spacing:0.5px}
+.breadcrumb span{color:var(--text);font-weight:500}
+.back-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.45rem 1rem;background:var(--dim);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:0.75rem;text-decoration:none;transition:all 0.2s;font-family:var(--mono);cursor:pointer}
+.back-btn:hover{border-color:rgba(255,255,255,0.2);color:var(--text)}
+.back-btn svg{width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none}
+.gh-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.45rem 1rem;background:var(--dim);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:0.75rem;text-decoration:none;transition:all 0.2s;font-family:var(--mono)}
+.gh-btn:hover{border-color:rgba(255,255,255,0.2);color:var(--text)}
+.gh-btn svg{width:13px;height:13px;fill:currentColor}
+.hero{position:relative;z-index:10;max-width:1300px;margin:0 auto;padding:4rem 4% 3rem}
+.hero-eyebrow{font-size:0.72rem;letter-spacing:4px;text-transform:uppercase;color:var(--orange);margin-bottom:1rem;display:flex;align-items:center;gap:0.7rem}
+.hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--orange)}
+.hero-title{font-family:var(--logo);font-size:clamp(2.8rem,7vw,5.5rem);font-weight:800;line-height:1.15;letter-spacing:-3px;color:#fff;margin-bottom:1.5rem}
+.hero-title em{font-style:normal;display:inline-block;background:linear-gradient(90deg,#a855f7 0%,#c084fc 40%,#e879f9 70%,#a855f7 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:flowgrade 3s linear infinite}
+@keyframes flowgrade{0%{background-position:0% center}100%{background-position:200% center}}
+.hero-sub{font-size:0.82rem;color:var(--muted);max-width:480px;line-height:1.8;letter-spacing:0.3px}
+.hero-meta{display:flex;align-items:center;gap:2rem;margin-top:2.5rem;flex-wrap:wrap}
+.meta-chip{display:flex;align-items:center;gap:0.5rem;font-size:0.72rem;color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:0.35rem 0.8rem;background:var(--dim)}
+.meta-chip svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none;opacity:0.6}
+.meta-chip b{color:var(--text);font-weight:500}
+.filterbar{position:relative;z-index:10;max-width:1300px;margin:0 auto;padding:0 4% 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.filter-tabs{display:flex;gap:0.3rem}
+.ftab{font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;padding:0.4rem 0.9rem;border-radius:4px;border:1px solid transparent;color:var(--muted);cursor:pointer;background:none;font-family:var(--mono);transition:all 0.2s}
+.ftab:hover{color:var(--text);border-color:var(--border)}
+.ftab.active{color:var(--orange);border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.06)}
+.project-count{font-size:0.72rem;color:var(--muted);letter-spacing:1px}
+.project-count b{color:var(--text)}
+.grid{position:relative;z-index:10;max-width:1300px;margin:0 auto;padding:0 4% 6rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+.grid-cell{background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:2.2rem 2rem;cursor:pointer;transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);position:relative;overflow:hidden;display:flex;flex-direction:column}
+.grid-cell:hover{background:rgba(255,255,255,0.06);transform:translateY(-10px);border-color:rgba(255,255,255,0.2);box-shadow:0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255,255,255,0.05)}
+.cell-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem}
+.cell-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--dim);border:1px solid var(--border);flex-shrink:0;transition:all 0.3s}
+.grid-cell:hover .cell-icon{border-color:var(--cell-color,var(--orange));background:rgba(249,115,22,0.12);transform:rotate(-5deg) scale(1.1)}
+.cell-icon svg{width:22px;height:22px;fill:none;stroke:var(--cell-color,var(--orange));stroke-width:1.8}
+.cell-num{font-size:0.7rem;color:var(--muted);letter-spacing:3px;font-weight:300;opacity:0.5}
+.cell-name{font-family:var(--logo);font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:0.6rem;letter-spacing:-0.5px;line-height:1.2}
+.cell-desc{font-size:0.8rem;color:var(--muted);line-height:1.8;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-weight:300;margin-bottom:2rem;flex-grow:1}
+.cell-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.05)}
+.cell-tags{display:flex;gap:0.5rem;flex-wrap:wrap}
+.ctag{font-size:0.65rem;letter-spacing:1px;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:6px;font-weight:600}
+.ctag-o{background:rgba(249,115,22,0.1);color:var(--orange);border:1px solid rgba(249,115,22,0.2)}
+.ctag-b{background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.2)}
+.ctag-g{background:rgba(16,185,129,0.1);color:var(--green);border:1px solid rgba(16,185,129,0.2)}
+.ctag-p{background:rgba(168,85,247,0.1);color:var(--purple);border:1px solid rgba(168,85,247,0.2)}
+.cell-date{font-size:0.7rem;color:var(--muted);font-weight:400;white-space:nowrap;opacity:0.7}
+.cell-arrow{position:absolute;bottom:2rem;right:2rem;opacity:0;transition:all 0.3s;transform:translate(-8px,8px)}
+.grid-cell:hover .cell-arrow{opacity:1;transform:translate(0,0)}
+.cell-arrow svg{width:18px;height:18px;stroke:var(--cell-color,var(--orange));stroke-width:2.5;fill:none}
+.modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.92);backdrop-filter:blur(12px);overflow-y:auto}
+.modal.open{display:block}
+.modal-inner{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:3rem 1rem}
+.modal-panel{width:min(680px,100%);background:#0d0d10;border:1px solid rgba(255,255,255,0.1);border-radius:20px;animation:slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)}
+@keyframes slideUp{from{opacity:0;transform:translateY(40px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-content{padding:3rem}
+.modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+.modal-name{font-family:var(--logo);font-size:1.8rem;font-weight:700;color:#fff;letter-spacing:-1px;line-height:1}
+.modal-filename{font-size:0.72rem;color:var(--orange);letter-spacing:1px;margin-top:0.5rem;font-weight:300}
+.modal-close{width:32px;height:32px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.2s;flex-shrink:0;border-radius:4px}
+.modal-close:hover{border-color:rgba(255,255,255,0.3);color:#fff}
+.modal-desc{font-size:0.82rem;color:var(--muted);line-height:1.9;margin-bottom:2rem;font-weight:300}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);margin-bottom:2rem}
+.mstat{background:#0d0d10;padding:1.2rem 1.4rem}
+.mstat-label{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;font-weight:300}
+.mstat-val{font-size:0.9rem;font-weight:600;color:#fff}
+.modal-tags{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.modal-actions{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.modal-nav{display:flex;gap:0.5rem}
+.nav-btn{display:inline-flex;align-items:center;gap:0.4rem;padding:0.5rem 1rem;background:none;border:1px solid var(--border);color:var(--muted);font-size:0.72rem;cursor:pointer;transition:all 0.2s;font-family:var(--mono);letter-spacing:0.5px;border-radius:4px}
+.nav-btn:hover{border-color:rgba(255,255,255,0.2);color:var(--text)}
+.nav-btn:disabled{opacity:0.2;cursor:not-allowed}
+.nav-btn svg{width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none}
+.gh-action{display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1.2rem;border:1px solid rgba(249,115,22,0.4);color:var(--orange);font-size:0.72rem;cursor:pointer;text-decoration:none;transition:all 0.2s;font-family:var(--mono);letter-spacing:0.5px;border-radius:4px;background:rgba(249,115,22,0.05)}
+.gh-action:hover{background:rgba(249,115,22,0.12);border-color:var(--orange)}
+.gh-action svg{width:13px;height:13px;fill:currentColor}
+.modal-pos{font-size:0.65rem;color:var(--muted);letter-spacing:1px}
+footer{position:relative;z-index:10;text-align:center;padding:2.5rem 0;border-top:1px solid var(--border);color:var(--muted);font-size:0.68rem;letter-spacing:2px;text-transform:uppercase}
+@media(max-width:640px){.grid{grid-template-columns:1fr}.modal-grid{grid-template-columns:1fr 1fr}.modal-content{padding:1.5rem}.hero-title{letter-spacing:-2px}}
+</style>
+</head>
+<body>
+
+<div id="pillar-bg"></div>
+<div class="bgo"></div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-inner">
+    <div class="modal-panel">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <div class="modal-name" id="m-name"></div>
+            <div class="modal-filename" id="m-fname"></div>
+          </div>
+          <button class="modal-close" id="m-close">✕</button>
+        </div>
+        <p class="modal-desc" id="m-desc"></p>
+        <div class="modal-grid" id="m-grid"></div>
+        <div class="modal-tags" id="m-tags"></div>
+        <div class="modal-actions">
+          <div class="modal-nav">
+            <button class="nav-btn" id="btn-prev"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> prev</button>
+            <button class="nav-btn" id="btn-next">next <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+          </div>
+          <span class="modal-pos" id="m-pos"></span>
+          <a class="gh-action" id="m-gh" href="#" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+            view on github
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="../Prototype.html" class="back-link back-btn">
+      <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      home
+    </a>
+    <span class="breadcrumb">portfolio / <span>blender</span></span>
+  </div>
+  <a href="https://github.com/Aditya-Vishwakarma722" target="_blank" rel="noopener noreferrer" class="gh-btn">
+    <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+    Aditya-Vishwakarma722
+  </a>
+</div>
+
+<div class="hero">
+  <div class="hero-eyebrow">3D art &amp; renders</div>
+  <h1 class="hero-title">Blender<br><em>Projects</em></h1>
+  <p class="hero-sub">A collection of personal 3D projects — modelling, shading, simulation and rendering experiments built in Blender.</p>
+  <div class="hero-meta" id="hero-meta"></div>
+</div>
+
+<div class="filterbar">
+  <div class="filter-tabs">
+    <button class="ftab active" data-sort="newest">newest</button>
+    <button class="ftab" data-sort="oldest">oldest</button>
+    <button class="ftab" data-sort="az">a → z</button>
+  </div>
+  <span class="project-count" id="proj-count"></span>
+</div>
+
+<div class="grid" id="grid"></div>
+<footer>crafted with elegance &nbsp;·&nbsp; &copy; 2026</footer>
+
+<script>
+// ── LightPillar Background ─────────────────────────────────────────────────
+(function(){
+  const container = document.getElementById('pillar-bg');
+  if(!container || typeof THREE === 'undefined') return;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+
+  const renderer = new THREE.WebGLRenderer({antialias:false,alpha:true,powerPreference:'high-performance',stencil:false,depth:false});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setClearColor(0,0);
+  renderer.domElement.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%';
+  container.appendChild(renderer.domElement);
+
+  const W = window.innerWidth, H = window.innerHeight;
+  renderer.setSize(W,H);
+
+  const pillarRotation = 25;
+  const rotRad = pillarRotation * Math.PI / 180;
+  const waveSin = Math.sin(0.4), waveCos = Math.cos(0.4);
+
+  const vShader = `
+    varying vec2 vUv;
+    void main(){ vUv = uv; gl_Position = vec4(position,1.0); }
+  `;
+
+  const fShader = `
+    precision highp float;
+    uniform float uTime;
+    uniform vec2  uResolution;
+    uniform vec3  uTopColor;
+    uniform vec3  uBottomColor;
+    uniform float uIntensity;
+    uniform float uGlowAmount;
+    uniform float uPillarWidth;
+    uniform float uPillarHeight;
+    uniform float uNoiseIntensity;
+    uniform float uRotCos;
+    uniform float uRotSin;
+    uniform float uPillarRotCos;
+    uniform float uPillarRotSin;
+    uniform float uWaveSin;
+    uniform float uWaveCos;
+    varying vec2 vUv;
+
+    void main(){
+      vec2 uv = (vUv * 2.0 - 1.0) * vec2(uResolution.x / uResolution.y, 1.0);
+      uv = vec2(uPillarRotCos*uv.x - uPillarRotSin*uv.y,
+                uPillarRotSin*uv.x + uPillarRotCos*uv.y);
+
+      vec3 ro = vec3(0.0, 0.0, -10.0);
+      vec3 rd = normalize(vec3(uv, 1.0));
+
+      vec3 col = vec3(0.0);
+      float t = 0.1;
+
+      for(int i = 0; i < 80; i++){
+        vec3 p = ro + rd * t;
+        p.xz = vec2(uRotCos*p.x - uRotSin*p.z,
+                    uRotSin*p.x + uRotCos*p.z);
+        vec3 q = p;
+        q.y = p.y * uPillarHeight + uTime;
+
+        float freq = 1.0, amp = 1.0;
+        for(int j = 0; j < 4; j++){
+          q.xz = vec2(uWaveCos*q.x - uWaveSin*q.z,
+                      uWaveSin*q.x + uWaveCos*q.z);
+          q += cos(q.zxy * freq - uTime * float(j) * 2.0) * amp;
+          freq *= 2.0;
+          amp  *= 0.5;
+        }
+
+        float d     = length(cos(q.xz)) - 0.2;
+        float bound = length(p.xz) - uPillarWidth;
+        float k = 4.0;
+        float h = max(k - abs(d - bound), 0.0);
+        d = max(d, bound) + h*h*0.0625/k;
+        d = abs(d)*0.15 + 0.01;
+
+        float grad = clamp((15.0 - p.y) / 30.0, 0.0, 1.0);
+        col += mix(uBottomColor, uTopColor, grad) / d;
+
+        t += d;
+        if(t > 50.0) break;
+      }
+
+      float wn = uPillarWidth / 3.0;
+      col = tanh(col * uGlowAmount / wn);
+      col -= fract(sin(dot(gl_FragCoord.xy, vec2(12.9898,78.233))) * 43758.5453) / 15.0 * uNoiseIntensity;
+
+      gl_FragColor = vec4(col * uIntensity, 1.0);
+    }
+  `;
+
+  function hexToVec3(hex){
+    const c = new THREE.Color(hex);
+    return new THREE.Vector3(c.r,c.g,c.b);
+  }
+
+  const uniforms = {
+    uTime:          {value: 0},
+    uResolution:    {value: new THREE.Vector2(W,H)},
+    uTopColor:      {value: hexToVec3('#5227FF')},
+    uBottomColor:   {value: hexToVec3('#FF9FFC')},
+    uIntensity:     {value: 1.0},
+    uGlowAmount:    {value: 0.002},
+    uPillarWidth:   {value: 3.0},
+    uPillarHeight:  {value: 0.4},
+    uNoiseIntensity:{value: 0.5},
+    uRotCos:        {value: 1.0},
+    uRotSin:        {value: 0.0},
+    uPillarRotCos:  {value: Math.cos(rotRad)},
+    uPillarRotSin:  {value: Math.sin(rotRad)},
+    uWaveSin:       {value: waveSin},
+    uWaveCos:       {value: waveCos},
+  };
+
+  const mat  = new THREE.ShaderMaterial({vertexShader:vShader,fragmentShader:fShader,uniforms,transparent:true,depthWrite:false,depthTest:false});
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2,2), mat);
+  scene.add(mesh);
+
+  let time = 0, rotSpeed = 0.3;
+  const clock = new THREE.Clock();
+
+  window.addEventListener('resize',()=>{
+    const w=window.innerWidth, h=window.innerHeight;
+    renderer.setSize(w,h);
+    uniforms.uResolution.value.set(w,h);
+  },{passive:true});
+
+  (function loop(){
+    time += clock.getDelta() * rotSpeed;
+    uniforms.uTime.value    = time;
+    uniforms.uRotCos.value  = Math.cos(time * 0.3);
+    uniforms.uRotSin.value  = Math.sin(time * 0.3);
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+  })();
+})();
+
+// ── Data ───────────────────────────────────────────────────────────────────
+const GITHUB='Aditya-Vishwakarma722', REPO='Blender-Projects';
+
+// Accent colors cycled per project
+const COLORS=['#f97316','#a855f7','#3b82f6','#10b981','#ec4899','#38bdf8','#f59e0b','#ef4444'];
+
+function fmtBytes(b){
+  if(!b) return '—';
+  if(b<1024) return b+' B';
+  if(b<1024*1024) return (b/1024).toFixed(1)+' KB';
+  return (b/(1024*1024)).toFixed(1)+' MB';
+}
+
+function fmtDate(d){return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}
+function tagCls(t){if(['cycles','eevee','geo-nodes','animation'].includes(t))return'ctag-b';if(['landscape','environment','interior','character'].includes(t))return'ctag-g';if(['simulation','fluid','rigging'].includes(t))return'ctag-p';return'ctag-o'}
+
+function inferTags(name){
+  const n=name.toLowerCase();
+  const tags=[];
+  if(/donut|food|cup|coffee/.test(n)) tags.push('food');
+  if(/landscape|terrain|nature|mountain|forest/.test(n)) tags.push('landscape');
+  if(/char|human|person|body|face|rig/.test(n)) tags.push('character');
+  if(/room|interior|house|home|scene/.test(n)) tags.push('interior');
+  if(/sci|space|mech|robot|cyber/.test(n)) tags.push('hard-surface');
+  if(/fluid|water|smoke|fire|sim/.test(n)) tags.push('simulation');
+  if(/anim|rig|walk|run/.test(n)) tags.push('animation');
+  if(/low.?poly|styliz/.test(n)) tags.push('geo-nodes');
+  if(tags.length===0) tags.push('blender');
+  return tags.slice(0,3);
+}
+
+// Show loading state
+document.getElementById('grid').innerHTML=`<div style="grid-column:1/-1;padding:4rem 2rem;text-align:center;color:var(--muted);font-size:0.78rem;letter-spacing:2px">fetching from github...</div>`;
+
+let projects=[];
+let curList=[], curIdx=-1;
+const modal=document.getElementById('modal');
+
+async function fetchProjects(){
+  try{
+    // Fetch repo contents
+    const res = await fetch(`https://api.github.com/repos/${GITHUB}/${REPO}/contents`);
+    if(!res.ok) throw new Error('API error '+res.status);
+    const files = await res.json();
+
+    // Filter .blend files
+    const blendFiles = files.filter(f=>f.name.endsWith('.blend') && f.type==='file');
+
+    // If no .blend at root, check one level deep
+    if(blendFiles.length===0){
+      const dirs = files.filter(f=>f.type==='dir');
+      for(const dir of dirs){
+        const sub = await fetch(dir.url).then(r=>r.json()).catch(()=>[]);
+        if(!Array.isArray(sub)) continue;
+        const blends = sub.filter(f=>f.name.endsWith('.blend'));
+        
+        blends.forEach((f)=>{
+          const base = f.name.replace('.blend','');
+          projects.push({
+            name: base,
+            path: dir.name+'/'+f.name,
+            size: fmtBytes(f.size),
+            sha: f.sha,
+            download_url: f.download_url,
+            html_url: f.html_url
+          });
+        });
+      }
+    } else {
+      blendFiles.forEach(f=>{
+        const base = f.name.replace('.blend','');
+        projects.push({
+          name: base,
+          path: f.name,
+          size: fmtBytes(f.size),
+          sha: f.sha,
+          download_url: f.download_url,
+          html_url: f.html_url
+        });
+      });
+    }
+
+    // Fetch real details (latest commit message) and date per file
+    const detailsPromises = projects.map(async (p)=>{
+      try{
+        const r = await fetch(`https://api.github.com/repos/${GITHUB}/${REPO}/commits?path=${encodeURIComponent(p.path)}&per_page=1`);
+        const d = await r.json();
+        if(Array.isArray(d)&&d[0]){
+          p.date = d[0].commit.committer.date;
+          p.desc = d[0].commit.message; // Real details from commit message
+        }
+      }catch(e){
+        p.desc = `Blender asset: ${p.name.replace(/_/g,' ')}`;
+      }
+    });
+    await Promise.all(detailsPromises);
+
+    // Final mapping for display
+    projects = projects.map((p,i)=>({
+      ...p,
+      color: COLORS[i % COLORS.length],
+      tags: inferTags(p.name),
+      version: '4.2 LTS'
+    }));
+
+    if(projects.length===0){
+      document.getElementById('grid').innerHTML=`<div style="grid-column:1/-1;padding:4rem 2rem;text-align:center;color:var(--muted);font-size:0.78rem;letter-spacing:2px">no .blend files found in repository</div>`;
+      return;
+    }
+
+    // Update hero meta
+    const sorted0=[...projects].sort((a,b)=>new Date(b.date)-new Date(a.date));
+    document.getElementById('hero-meta').innerHTML=`
+      <div class="meta-chip"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg><b>${projects.length}</b> projects</div>
+      <div class="meta-chip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>latest <b>${sorted0[0].date?fmtDate(sorted0[0].date):'—'}</b></div>
+      <div class="meta-chip"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Blender <b>4.x</b></div>`;
+
+    // Update GitHub links
+    document.querySelector('.gh-btn').href=`https://github.com/${GITHUB}/${REPO}`;
+    document.querySelector('.gh-btn').childNodes[2].textContent=' '+GITHUB; // Fix textNode index
+
+    renderGrid([...projects].sort((a,b)=>new Date(b.date)-new Date(a.date)));
+
+    // Re-wire tabs with live data
+    document.querySelectorAll('.ftab').forEach(t=>{
+      t.onclick=()=>{
+        document.querySelectorAll('.ftab').forEach(x=>x.classList.remove('active'));
+        t.classList.add('active');const s=t.dataset.sort;
+        renderGrid([...projects].sort((a,b)=>s==='newest'?new Date(b.date)-new Date(a.date):s==='oldest'?new Date(a.date)-new Date(b.date):a.name.localeCompare(b.name)));
+      };
+    });
+
+  }catch(err){
+    document.getElementById('grid').innerHTML=`<div style="grid-column:1/-1;padding:4rem 2rem;text-align:center;color:var(--muted);font-size:0.78rem;letter-spacing:2px">could not load repository — ${err.message}<br><br><a href="https://github.com/${GITHUB}/${REPO}" target="_blank" style="color:var(--orange);text-decoration:none">open on github ↗</a></div>`;
+  }
+}
+
+fetchProjects();
+
+function openModal(idx){
+  curIdx=idx;const p=curList[idx];
+  document.getElementById('m-name').textContent=p.name.replace(/_/g,' ');
+  document.getElementById('m-fname').textContent=`${p.name}.blend`;
+  document.getElementById('m-desc').textContent=p.desc;
+  document.getElementById('m-grid').innerHTML=`<div class="mstat"><div class="mstat-label">blender</div><div class="mstat-val">v${p.version}</div></div><div class="mstat"><div class="mstat-label">file size</div><div class="mstat-val">${p.size}</div></div><div class="mstat"><div class="mstat-label">uploaded</div><div class="mstat-val">${p.date?fmtDate(p.date):'—'}</div></div>`;
+  document.getElementById('m-tags').innerHTML=p.tags.map(t=>`<span class="ctag ${tagCls(t)}">${t}</span>`).join('');
+  document.getElementById('m-pos').textContent=`${idx+1} / ${curList.length}`;
+  document.getElementById('m-gh').href=p.html_url;
+  document.getElementById('btn-prev').disabled=idx===0;
+  document.getElementById('btn-next').disabled=idx===curList.length-1;
+  modal.classList.add('open');
+  document.body.style.overflow='hidden';
+  document.querySelectorAll('.grid-cell').forEach(el=>el.classList.remove('active-cell'));
+  document.querySelectorAll('.grid-cell')[idx]?.classList.add('active-cell');
+}
+function closeModal(){
+  modal.classList.remove('open');
+  document.body.style.overflow='';curIdx=-1;
+  document.querySelectorAll('.grid-cell').forEach(el=>el.classList.remove('active-cell'));
+}
+document.getElementById('m-close').addEventListener('click',closeModal);
+modal.addEventListener('click',e=>{if(e.target===modal||e.target.classList.contains('modal-inner'))closeModal();});
+document.addEventListener('keydown',e=>{
+  if(!modal.classList.contains('open'))return;
+  if(e.key==='Escape')closeModal();
+  if(e.key==='ArrowRight'&&curIdx<curList.length-1)openModal(curIdx+1);
+  if(e.key==='ArrowLeft'&&curIdx>0)openModal(curIdx-1);
+});
+document.getElementById('btn-prev').addEventListener('click',()=>{if(curIdx>0)openModal(curIdx-1);});
+document.getElementById('btn-next').addEventListener('click',()=>{if(curIdx<curList.length-1)openModal(curIdx+1);});
+
+function renderGrid(arr){
+  curList=arr;
+  const g=document.getElementById('grid');g.innerHTML='';
+  document.getElementById('proj-count').innerHTML=`<b>${arr.length}</b> projects`;
+  arr.forEach((p,i)=>{
+    const cell=document.createElement('div');
+    cell.className='grid-cell';cell.style.setProperty('--cell-color',p.color);
+    cell.innerHTML=`
+      <div class="cell-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></div>
+      <div class="cell-top">
+        <div class="cell-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+        <span class="cell-num">${String(i+1).padStart(2,'0')}</span>
+      </div>
+      <div class="cell-name">${p.name.replace(/_/g,' ')}</div>
+      <div class="cell-desc">${p.desc}</div>
+      <div class="cell-footer">
+        <div class="cell-tags">${p.tags.slice(0,2).map(t=>`<span class="ctag ${tagCls(t)}">${t}</span>`).join('')}</div>
+        <span class="cell-date">${p.date?fmtDate(p.date):'—'}</span>
+      </div>`;
+    cell.addEventListener('click',()=>openModal(i));
+    g.appendChild(cell);
+  });
+}
+</script>
+</body>
+</html>

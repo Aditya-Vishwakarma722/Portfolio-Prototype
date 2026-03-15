@@ -1,523 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Edits | Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="video_edits.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Edits | Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{--bg-dark:#0a0a0c;--card-bg:rgba(15,15,20,0.75);--card-border:rgba(255,255,255,0.1);--text-main:#f0f0f2;--text-muted:#b0b0c0;--color-blue:#3b82f6;--color-red:#ef4444;--font-main:'Inter',sans-serif;--font-logo:'Outfit',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-main);color:var(--text-main);background:#0a0a0c;min-height:100vh;overflow-x:hidden}
+#floating-lines-container{mix-blend-mode:screen;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+.bg-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:radial-gradient(circle at 50% 50%,rgba(5,5,10,0.4) 0%,rgba(0,0,0,0.85) 100%);z-index:1;pointer-events:none}
+.header{display:flex;justify-content:flex-start;align-items:center;padding:2rem 5%;max-width:1400px;margin:0 auto;position:relative;z-index:10}
+.back-link{display:inline-flex;align-items:center;gap:0.6rem;padding:0.8rem 1.5rem;background:rgba(255,255,255,0.05);border:1px solid var(--card-border);border-radius:50px;color:var(--text-main);text-decoration:none;font-size:0.9rem;font-weight:500;transition:all 0.3s ease;backdrop-filter:blur(10px)}
+.back-link:hover{background:rgba(255,255,255,0.1);border-color:var(--color-blue);transform:translateX(-5px)}
+.back-link svg{width:18px;height:18px}
+main{max-width:1000px;margin:0 auto;padding:0 5% 6rem;position:relative;z-index:10}
+.page-title-section{text-align:center;margin-bottom:3rem;padding-top:1rem}
+.main-heading{font-family:var(--font-logo);font-size:clamp(3rem,10vw,6rem);font-weight:800;text-transform:uppercase;letter-spacing:-2px;line-height:0.9;margin-bottom:1.5rem;background-image:linear-gradient(120deg,#b5b5b5 0%,#b5b5b5 35%,#fff 50%,#b5b5b5 65%,#b5b5b5 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shiny 2s linear infinite;display:inline-block}
+@keyframes shiny{0%{background-position:150% center}100%{background-position:-50% center}}
+.separator-bar{width:120px;height:4px;background:var(--color-blue);margin:0 auto 1.5rem;border-radius:2px;box-shadow:0 0 15px rgba(59,130,246,0.5)}
+.subtitle{color:var(--text-muted);font-size:1.1rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:2.5rem}
+.sorting-tabs{display:flex;justify-content:center;gap:1rem;margin-bottom:3rem;flex-wrap:wrap}
+.sort-tab{background:rgba(255,255,255,0.05);border:1px solid var(--card-border);backdrop-filter:blur(10px);color:var(--text-muted);padding:0.6rem 1.5rem;border-radius:50px;font-size:0.9rem;font-weight:500;cursor:pointer;transition:all 0.3s ease;font-family:var(--font-main);letter-spacing:0.5px}
+.sort-tab:hover{background:rgba(255,255,255,0.1);color:var(--text-main);transform:translateY(-2px)}
+.sort-tab.active{background:rgba(59,130,246,0.15);border-color:var(--color-blue);color:var(--text-main);box-shadow:0 0 15px rgba(59,130,246,0.3)}
+
+/* Gallery list */
+.gallery-list{display:flex;flex-direction:column;gap:0;width:100%}
+
+/* Divider between items */
+.gallery-list .vitem:not(:last-child){border-bottom:1px solid rgba(255,255,255,0.05)}
+
+/* Each row */
+.vitem{display:grid;grid-template-columns:48px 160px 1fr auto;align-items:center;gap:1.4rem;padding:0.8rem 1rem;text-decoration:none;color:var(--text-main);border-radius:10px;transition:background 0.2s ease;position:relative;cursor:pointer}
+.vitem:hover{background:rgba(255,255,255,0.04)}
+
+/* Index number */
+.vitem-index{font-size:0.95rem;font-weight:600;color:rgba(255,255,255,0.18);text-align:center;font-family:var(--font-logo);letter-spacing:1px;transition:opacity 0.2s}
+.vitem:hover .vitem-index{opacity:0}
+.vitem:hover .vitem-play{opacity:1}
+.vitem-play{position:absolute;left:1rem;width:48px;text-align:center;opacity:0;transition:opacity 0.2s}
+.vitem-play svg{width:18px;height:18px;fill:var(--text-main)}
+
+/* Thumbnail */
+.vitem-thumb{width:160px;height:90px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#111;position:relative}
+.vitem-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s ease}
+.vitem:hover .vitem-thumb img{transform:scale(1.08)}
+.vitem-thumb-dot{position:absolute;bottom:4px;right:4px;width:8px;height:8px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.5)}
+
+/* Info */
+.vitem-info{display:flex;flex-direction:column;gap:0.35rem;min-width:0}
+.vitem-title{font-size:0.95rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-main);transition:color 0.2s}
+.vitem:hover .vitem-title{color:#fff}
+.vitem-meta{display:flex;align-items:center;gap:0.8rem}
+.vitem-tag{font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:0.15rem 0.5rem;border-radius:4px}
+.vitem-series{font-size:0.78rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Stats */
+.vitem-stats{display:flex;align-items:center;gap:1.5rem;flex-shrink:0}
+.vitem-stat{display:flex;align-items:center;gap:0.4rem;color:rgba(255,255,255,0.35);font-size:0.8rem;font-weight:500;transition:color 0.2s;white-space:nowrap}
+.vitem:hover .vitem-stat{color:rgba(255,255,255,0.6)}
+.vitem-stat svg{width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none}
+.vitem-dur{font-size:0.78rem;color:rgba(255,255,255,0.25);font-weight:500;font-variant-numeric:tabular-nums;min-width:32px;text-align:right;transition:color 0.2s}
+.vitem:hover .vitem-dur{color:rgba(255,255,255,0.5)}
+
+/* Header row */
+.gallery-header{display:grid;grid-template-columns:48px 160px 1fr auto;align-items:center;gap:1.4rem;padding:0 1rem 0.8rem;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:0.2rem}
+.gallery-header span{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.25)}
+.gh-stats{display:flex;gap:1.5rem;flex-shrink:0}
+.gh-stats span{font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.25);min-width:32px;text-align:right}
+
+.source-box{position:fixed;bottom:2rem;right:2rem;background:var(--card-bg);backdrop-filter:blur(15px);border:1px solid var(--card-border);padding:1rem 1.5rem;border-radius:12px;z-index:100;box-shadow:0 10px 30px rgba(0,0,0,0.5);transition:all 0.3s ease;text-align:center}
+.source-box:hover{transform:translateY(-5px);border-color:var(--color-red)}
+.source-box h4{font-size:0.75rem;color:var(--text-muted);margin-bottom:0.6rem;text-transform:uppercase;letter-spacing:1.5px;font-weight:500}
+.source-box a{color:var(--text-main);text-decoration:none;font-weight:700;font-size:1rem;transition:color 0.3s ease}
+.source-box a:hover{color:var(--color-red)}
+footer{text-align:center;padding:3rem 0;border-top:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.2);font-size:0.8rem;position:relative;z-index:10;letter-spacing:1px}
+
+@media(max-width:640px){
+  .vitem{grid-template-columns:36px 120px 1fr auto;gap:0.8rem}
+  .vitem-thumb{width:120px;height:68px}
+  .gallery-header{grid-template-columns:36px 120px 1fr auto;gap:0.8rem}
+  .vitem-stats{gap:0.8rem}
+  .gh-stats{gap:0.8rem}
+  .vitem-stat:first-child{display:none}
+  .gh-stats span:first-child{display:none}
+}
+</style>
 </head>
-<body class="video-gallery-page">
-    <div id="floating-lines-container" style="mix-blend-mode: screen; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3;"></div>
-    <div class="bg-overlay"></div>
+<body>
+<div id="floating-lines-container"></div>
+<div class="bg-overlay"></div>
 
-    <header class="header">
-        <nav class="nav">
-            <a href="../Prototype.html" class="back-link">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-                Back to Home
-            </a>
-        </nav>
-    </header>
+<header class="header">
+  <a href="../Prototype.html" class="back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Back to Home
+  </a>
+</header>
 
-    <main>
-        <section class="page-title-section">
-            <h1 class="main-heading shiny-text">Video Edits</h1>
-            <div class="separator-bar"></div>
-            <p class="subtitle">Cinematic Edits & Anime Edits</p>
-            
-            <div class="sorting-tabs">
-                <button class="sort-tab active" data-sort="recent">Recently Uploaded</button>
-                <button class="sort-tab" data-sort="views">Most Viewed</button>
-                <button class="sort-tab" data-sort="longest">Longest</button>
-            </div>
-        </section>
-
-        <div class="gallery-list">
-            <!-- Videos will be added here in list format -->
-            <div class="empty-state">
-                <p>No video edits to display yet. Check back soon!</p>
-            </div>
-        </div>
-    </main>
-
-    <div class="source-box">
-        <h4>Source</h4>
-        <a href="https://www.youtube.com/@PSYKO7" target="_blank" rel="noopener noreferrer">Youtube</a>
+<main>
+  <section class="page-title-section">
+    <h1 class="main-heading">Video Edits</h1>
+    <div class="separator-bar"></div>
+    <p class="subtitle">Cinematic Edits & Anime Edits</p>
+    <div class="sorting-tabs">
+      <button class="sort-tab active" data-sort="recent">Recently Uploaded</button>
+      <button class="sort-tab" data-sort="views">Most Viewed</button>
+      <button class="sort-tab" data-sort="longest">Longest</button>
+      <button class="sort-tab" data-sort="shortest">Shortest</button>
     </div>
-
-    <footer>
-        <p>&copy; 2026 Crafted with elegance.</p>
-    </footer>
-
-    <script>
-        // WebGL Floating Lines Background
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('floating-lines-container');
-            if (!container) return;
-
-            const vertexShader = `
-            precision highp float;
-            void main() {
-                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-            }
-            `;
-
-            const fragmentShader = `
-            precision highp float;
-
-            uniform float iTime;
-            uniform vec3  iResolution;
-            uniform float animationSpeed;
-
-            uniform bool enableTop;
-            uniform bool enableMiddle;
-            uniform bool enableBottom;
-
-            uniform int topLineCount;
-            uniform int middleLineCount;
-            uniform int bottomLineCount;
-
-            uniform float topLineDistance;
-            uniform float middleLineDistance;
-            uniform float bottomLineDistance;
-
-            uniform vec3 topWavePosition;
-            uniform vec3 middleWavePosition;
-            uniform vec3 bottomWavePosition;
-
-            uniform vec2 iMouse;
-            uniform bool interactive;
-            uniform float bendRadius;
-            uniform float bendStrength;
-            uniform float bendInfluence;
-
-            uniform bool parallax;
-            uniform float parallaxStrength;
-            uniform vec2 parallaxOffset;
-
-            uniform vec3 lineGradient[8];
-            uniform int lineGradientCount;
-
-            const vec3 BLACK = vec3(0.0);
-            const vec3 PINK  = vec3(233.0, 71.0, 245.0) / 255.0;
-            const vec3 BLUE  = vec3(47.0,  75.0, 162.0) / 255.0;
-
-            mat2 rotate(float r) {
-                return mat2(cos(r), sin(r), -sin(r), cos(r));
-            }
-
-            vec3 background_color(vec2 uv) {
-                vec3 col = vec3(0.0);
-
-                float y = sin(uv.x - 0.2) * 0.3 - 0.1;
-                float m = uv.y - y;
-
-                col += mix(BLUE, BLACK, smoothstep(0.0, 1.0, abs(m)));
-                col += mix(PINK, BLACK, smoothstep(0.0, 1.0, abs(m - 0.8)));
-                return col * 0.5;
-            }
-
-            vec3 getLineColor(float t, vec3 baseColor) {
-                if (lineGradientCount <= 0) {
-                    return baseColor;
-                }
-
-                vec3 gradientColor;
-                
-                if (lineGradientCount == 1) {
-                    gradientColor = lineGradient[0];
-                } else {
-                    float clampedT = clamp(t, 0.0, 0.9999);
-                    float scaled = clampedT * float(lineGradientCount - 1);
-                    int idx = int(floor(scaled));
-                    float f = fract(scaled);
-                    int idx2 = min(idx + 1, lineGradientCount - 1);
-
-                    vec3 c1 = lineGradient[idx];
-                    vec3 c2 = lineGradient[idx2];
-                    
-                    gradientColor = mix(c1, c2, f);
-                }
-                
-                return gradientColor * 0.5;
-            }
-
-            float wave(vec2 uv, float offset, vec2 screenUv, vec2 mouseUv, bool shouldBend) {
-                float time = iTime * animationSpeed;
-
-                float x_offset   = offset;
-                float x_movement = time * 0.1;
-                float amp        = sin(offset + time * 0.2) * 0.3;
-                float y          = sin(uv.x + x_offset + x_movement) * amp;
-
-                if (shouldBend) {
-                    vec2 d = screenUv - mouseUv;
-                    float influence = exp(-dot(d, d) * bendRadius); // radial falloff around cursor
-                    float bendOffset = (mouseUv.y - screenUv.y) * influence * bendStrength * bendInfluence;
-                    y += bendOffset;
-                }
-
-                float m = uv.y - y;
-                return 0.0175 / max(abs(m) + 0.01, 1e-3) + 0.01;
-            }
-
-            void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-                vec2 baseUv = (2.0 * fragCoord - iResolution.xy) / iResolution.y;
-                baseUv.y *= -1.0;
-                
-                if (parallax) {
-                    baseUv += parallaxOffset;
-                }
-
-                vec3 col = vec3(0.0);
-
-                vec3 b = lineGradientCount > 0 ? vec3(0.0) : background_color(baseUv);
-
-                vec2 mouseUv = vec2(0.0);
-                if (interactive) {
-                    mouseUv = (2.0 * iMouse - iResolution.xy) / iResolution.y;
-                    mouseUv.y *= -1.0;
-                }
-                
-                if (enableBottom) {
-                    for (int i = 0; i < 6; ++i) { // WebGL loop unrolling compatibility fix
-                        if(i >= bottomLineCount) break;
-                        float fi = float(i);
-                        float t = fi / max(float(bottomLineCount - 1), 1.0);
-                        vec3 lineCol = getLineColor(t, b);
-                        
-                        float angle = bottomWavePosition.z * log(length(baseUv) + 1.0);
-                        vec2 ruv = baseUv * rotate(angle);
-                        col += lineCol * wave(
-                            ruv + vec2(bottomLineDistance * fi + bottomWavePosition.x, bottomWavePosition.y),
-                            1.5 + 0.2 * fi,
-                            baseUv,
-                            mouseUv,
-                            interactive
-                        ) * 0.2;
-                    }
-                }
-
-                if (enableMiddle) {
-                    for (int i = 0; i < 6; ++i) {
-                        if(i >= middleLineCount) break;
-                        float fi = float(i);
-                        float t = fi / max(float(middleLineCount - 1), 1.0);
-                        vec3 lineCol = getLineColor(t, b);
-                        
-                        float angle = middleWavePosition.z * log(length(baseUv) + 1.0);
-                        vec2 ruv = baseUv * rotate(angle);
-                        col += lineCol * wave(
-                            ruv + vec2(middleLineDistance * fi + middleWavePosition.x, middleWavePosition.y),
-                            2.0 + 0.15 * fi,
-                            baseUv,
-                            mouseUv,
-                            interactive
-                        );
-                    }
-                }
-
-                if (enableTop) {
-                    for (int i = 0; i < 6; ++i) {
-                        if(i >= topLineCount) break;
-                        float fi = float(i);
-                        float t = fi / max(float(topLineCount - 1), 1.0);
-                        vec3 lineCol = getLineColor(t, b);
-                        
-                        float angle = topWavePosition.z * log(length(baseUv) + 1.0);
-                        vec2 ruv = baseUv * rotate(angle);
-                        ruv.x *= -1.0;
-                        col += lineCol * wave(
-                            ruv + vec2(topLineDistance * fi + topWavePosition.x, topWavePosition.y),
-                            1.0 + 0.2 * fi,
-                            baseUv,
-                            mouseUv,
-                            interactive
-                        ) * 0.1;
-                    }
-                }
-
-                fragColor = vec4(col, 1.0);
-            }
-
-            void main() {
-                vec4 color = vec4(0.0);
-                mainImage(color, gl_FragCoord.xy);
-                gl_FragColor = color;
-            }
-            `;
-
-            let active = true;
-
-            const scene = new THREE.Scene();
-            const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-            camera.position.z = 1;
-
-            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-            renderer.domElement.style.width = '100%';
-            renderer.domElement.style.height = '100%';
-            
-            renderer.setClearColor(0x000000, 0); 
-            container.appendChild(renderer.domElement);
-
-            const uniforms = {
-                iTime: { value: 0 },
-                iResolution: { value: new THREE.Vector3(1, 1, 1) },
-                animationSpeed: { value: 1.0 },
-
-                enableTop: { value: true },
-                enableMiddle: { value: true },
-                enableBottom: { value: true },
-
-                topLineCount: { value: 6 },
-                middleLineCount: { value: 6 },
-                bottomLineCount: { value: 6 },
-
-                topLineDistance: { value: 0.05 },
-                middleLineDistance: { value: 0.05 },
-                bottomLineDistance: { value: 0.05 },
-
-                topWavePosition: { value: new THREE.Vector3(10.0, 0.5, -0.4) },
-                middleWavePosition: { value: new THREE.Vector3(5.0, 0.0, 0.2) },
-                bottomWavePosition: { value: new THREE.Vector3(2.0, -0.7, -1) },
-
-                iMouse: { value: new THREE.Vector2(-1000, -1000) },
-                interactive: { value: true },
-                bendRadius: { value: 5.0 },
-                bendStrength: { value: -0.5 },
-                bendInfluence: { value: 0 },
-
-                parallax: { value: true },
-                parallaxStrength: { value: 0.2 },
-                parallaxOffset: { value: new THREE.Vector2(0, 0) },
-
-                lineGradient: { value: Array.from({ length: 8 }, () => new THREE.Vector3(1, 1, 1)) },
-                lineGradientCount: { value: 0 }
-            };
-
-            const material = new THREE.ShaderMaterial({
-                uniforms,
-                vertexShader,
-                fragmentShader,
-                transparent: true
-            });
-
-            const geometry = new THREE.PlaneGeometry(2, 2);
-            const mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-
-            const clock = new THREE.Clock();
-            
-            let targetMouse = new THREE.Vector2(-1000, -1000);
-            let currentMouse = new THREE.Vector2(-1000, -1000);
-            let targetInfluence = 0;
-            let currentInfluence = 0;
-            let targetParallax = new THREE.Vector2(0, 0);
-            let currentParallax = new THREE.Vector2(0, 0);
-
-            const setSize = () => {
-                if (!active) return;
-                const width = container.clientWidth || 1;
-                const height = container.clientHeight || 1;
-
-                renderer.setSize(width, height, false);
-                uniforms.iResolution.value.set(renderer.domElement.width, renderer.domElement.height, 1);
-            };
-
-            setSize();
-            window.addEventListener('resize', setSize);
-
-            const handlePointerMove = (event) => {
-                const rect = renderer.domElement.getBoundingClientRect();
-                const x = event.clientX - rect.left;
-                const y = event.clientY - rect.top;
-                const dpr = renderer.getPixelRatio();
-
-                targetMouse.set(x * dpr, (rect.height - y) * dpr);
-                targetInfluence = 1.0;
-
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const offsetX = (x - centerX) / rect.width;
-                const offsetY = -(y - centerY) / rect.height;
-                targetParallax.set(offsetX * 0.2, offsetY * 0.2);
-            };
-
-            const handlePointerLeave = () => {
-                targetInfluence = 0.0;
-            };
-
-            renderer.domElement.addEventListener('pointermove', handlePointerMove);
-            renderer.domElement.addEventListener('pointerleave', handlePointerLeave);
-
-            const mouseDamping = 0.05;
-
-            const renderLoop = () => {
-                if (!active) return;
-
-                uniforms.iTime.value = clock.getElapsedTime();
-
-                currentMouse.lerp(targetMouse, mouseDamping);
-                uniforms.iMouse.value.copy(currentMouse);
-
-                currentInfluence += (targetInfluence - currentInfluence) * mouseDamping;
-                uniforms.bendInfluence.value = currentInfluence;
-
-                currentParallax.lerp(targetParallax, mouseDamping);
-                uniforms.parallaxOffset.value.copy(currentParallax);
-
-                renderer.render(scene, camera);
-                requestAnimationFrame(renderLoop);
-            };
-            
-            renderLoop();
-        });
-
-        // Populate Video Gallery
-        const youtubeVideos = [
-            { id: "8NspLIRfjog", title: "Childish Gambino - Joker Edit", color: "#d92626", views: 27, likes: 6, comments: 0, duration: 45, date: 41 },
-            { id: "PcbSi3Nnk9c", title: "W2MS - GTA 6 Trailer \"Alight Motion\" [Edit/AMV]", color: "#e84c88", views: 24, likes: 2, comments: 0, duration: 38, date: 40 },
-            { id: "uR-iSU5b8cU", title: "Come Home - Cyberpunk Edgerunners \"David & Lucy\" Alight Motion [Edit/AMV]", color: "#fcee0a", views: 47, likes: 7, comments: 0, duration: 52, date: 39 },
-            { id: "7t3qC7_qwpg", title: "Blue - Chainsaw Man \"Reze Arc\" Alight Motion [Edit/AMV]", color: "#3b82f6", views: 32, likes: 2, comments: 0, duration: 32, date: 38 },
-            { id: "L3t6OQv-sGM", title: "Espresso - One Piece \"Luffy\" Quick Edit Alight Motion [Edit/AMV]", color: "#fca5a5", views: 90, likes: 5, comments: 0, duration: 15, date: 37 }, 
-            { id: "kh4XpT2LLuU", title: "Gata Only - Mei Mei \"Jujutsu Kaisen\" [Edit/AMV]", color: "#9ca3af", views: 369, likes: 7, comments: 0, duration: 25, date: 36 }, 
-            { id: "W3YzpSOtryM", title: "The Ghetto Christmas Carol - Gojo vs Toji \"Live Action\" XXXTENTACION [Edit/AMV]", color: "#1f2937", views: 52, likes: 3, comments: 0, duration: 60, date: 35 }, 
-            { id: "cvd6-x6Q0_c", title: "Re-Up - Gojo Quick Edit \"Jujutsu Kaisen\" Alight Motion [Edit/AMV]", color: "#8b5cf6", views: 26, likes: 4, comments: 0, duration: 22, date: 34 }, 
-            { id: "n3mUpWu0H9s", title: "I Love the Way You Kiss Me - Tokyo Ghoul Edit \"Kaneki X Rize\" Alight Motion [Edit/AMV]", color: "#dc2626", views: 554, likes: 29, comments: 0, duration: 40, date: 33 }, 
-            { id: "LP6RQyuBCEE", title: "My Ordinary Life - Solo Leveling Edit \"Sung Vs Kang\" Alight Motion [Edit/AMV]", color: "#60a5fa", views: 135, likes: 10, comments: 0, duration: 48, date: 32 }, 
-            { id: "Zuw7QY5eiLI", title: "CATACLYSM - Shadow Fight 2 Edit \"Alight Motion\" [Edit/GMV]", color: "#000000", views: 142, likes: 18, comments: 0, duration: 35, date: 31 }, 
-            { id: "4_MfejZn_vc", title: "Lifeline - Naruto vs Sasuke Quick Edit \"Alight Motion\" [Edit/AMV]", color: "#3b82f6", views: 36, likes: 5, comments: 0, duration: 20, date: 30 }, 
-            { id: "D5Xy0GmFRiE", title: "Bullseye - Demon Slayer Edit \"@PJUNKIE Inspired Remake\" Alight Motion [Edit/AMV]", color: "#ed8936", views: 333, likes: 17, comments: 0, duration: 33, date: 29 },
-            { id: "6U5un-hhxGc", title: "Death Is No More - Kaiju No. 8 Edit \"Kaiju 8 vs Kaiju 9\" Alight Motion [Edit/AMV]", color: "#10b981", views: 1724, likes: 23, comments: 0, duration: 42, date: 28 },
-            { id: "2dxH2LdHYck", title: "FUNK Estranho - Demon Slayer Edit \"Sanemi & Obanai\" [Alight Motion [Edit/AMV]", color: "#a855f7", views: 1059, likes: 53, comments: 0, duration: 38, date: 27 },
-            { id: "0SgoJaKCvlE", title: "Moth to a Flame - Dragon Ball Z Edit \"Gohan SSJ2 vs Cell\" Alight Motion [Edit/AMV]", color: "#f59e0b", views: 311, likes: 8, comments: 0, duration: 55, date: 26 },
-            { id: "BBlSLawy1ZM", title: "Flawless - Anime Mix Edit \"Alight Motion\" [Edit/AMV]", color: "#ec4899", views: 302, likes: 18, comments: 0, duration: 28, date: 25 },
-            { id: "I73hz_qLej0", title: "Love is Violence - Anime Mix Edit \"Alight Motion\" [Edit/AMV]", color: "#ef4444", views: 1264, likes: 40, comments: 0, duration: 30, date: 24 },
-            { id: "ywLi_MKaX_Q", title: "Flaws & Sins - Wind Breaker Edit \"Haruka Sakura Fight\" Alight Motion [Edit/AMV]", color: "#ffffff", views: 443, likes: 20, comments: 0, duration: 35, date: 23 },
-            { id: "T9lrOy4ba-Y", title: "500lbs - One Piece Edit \"Luffy vs Lucci\" Alight Motion [Edit/AMV]", color: "#ef4444", views: 893, likes: 34, comments: 0, duration: 44, date: 22 },
-            { id: "T15ycMKcAiY", title: "Higher - Anime Mix Edit \"100 Subs Special\" Alight Motion [Edit/AMV]", color: "#ffd700", views: 254, likes: 10, comments: 0, duration: 75, date: 21 },
-            { id: "nNMKJpRDhqw", title: "One Call - Hunter X Hunter Edit \"Gon Vs Hisoka\" Alight Motion [Edit/AMV]", color: "#8b5cf6", views: 497, likes: 16, comments: 0, duration: 46, date: 20 },
-            { id: "93pZBIVd-xw", title: "VVV - Black Clover Edit \"Asta Vs Wizard King Conrad\" Transition Check [Edit/AMV]", color: "#db2777", views: 2548, likes: 101, comments: 0, duration: 18, date: 19 },
-            { id: "3sYb_xfahnc", title: "I Wanna Be Your Slave - Fire Force Quick Edit \"Alight Motion\" [Edit/AMV]", color: "#fb923c", views: 73, likes: 12, comments: 0, duration: 25, date: 18 },
-            { id: "kD3p25hvQqQ", title: "MAMI! - Lufffy Edit \"Gear 5\" One Piece \"Alight Motion\" [Edit/AMV]", color: "#e2e8f0", views: 1216, likes: 53, comments: 0, duration: 50, date: 17 },
-            { id: "ZPcs9SktfBA", title: "Funk Of The Damned - Chainsaw Man vs Katana Man Quick Edit \"Chainsaw Man\" [Edit/AMV]", color: "#dc2626", views: 502, likes: 14, comments: 0, duration: 33, date: 16 },
-            { id: "Q9Iqq0RVO9c", title: "Empathy - Solo Leveling Edit \"Sun Jin Woo\" [Edit/AMV]", color: "#60a5fa", views: 660, likes: 25, comments: 0, duration: 58, date: 15 },
-            { id: "zJSSRd2rvBU", title: "Eyes Don't Lie - Quick Edit \"Gojo vs Toji\" [Edit/AMV]", color: "#8b5cf6", views: 312, likes: 11, comments: 0, duration: 36, date: 14 },
-            { id: "SYjWZs8RxkA", title: "Orquestra Maldita - Yuta Edit \"JJK 0\" Yuta Vs Geto [Edit/AMV]", color: "#d946ef", views: 505, likes: 17, comments: 0, duration: 29, date: 13 }, 
-            { id: "-37k4p0EXsU", title: "Rapture - GTA 6 Trailer Edit [ #gta #gta6 #gametrailers #edit ]", color: "#f472b6", views: 8208, likes: 391, comments: 0, duration: 80, date: 12 }, 
-            { id: "kX6aa5jmIEU", title: "Cardigan - Eren Yeager \"Freedom\" Edit [Edit/AMV]", color: "#ef4444", views: 6226, likes: 369, comments: 0, duration: 37, date: 11 }, 
-            { id: "et3DeM6GPyg", title: "Devil Eyes - Madara X Sukuna Badass Edit \"Naruto & JJK\" [Edit/AMV]", color: "#dc2626", views: 734, likes: 29, comments: 0, duration: 65, date: 10 }, 
-            { id: "3_-HpTPRy8o", title: "Mexican Phonk Eki - Luffy Gear 5 X Gojo Awakening Badass Edit [Edit/AMV]", color: "#e2e8f0", views: 649, likes: 28, comments: 0, duration: 53, date: 9 }, 
-            { id: "pZk_aDVWo8o", title: "Blood & Water - Sukuna VS Mahoraga Edit \"Jujutsu Kaisen Season 2\" [Edit/AMV]", color: "#ea580c", views: 565, likes: 25, comments: 0, duration: 49, date: 8 }, 
-            { id: "TRtC7H6plhk", title: "Life In Rio - Sukuna VS Jogo \"Badass\" Edit [Edit/AMV]", color: "#ef4444", views: 4538, likes: 114, comments: 0, duration: 40, date: 7 }, 
-            { id: "Ljlcbz50FSU", title: "I'm Good - Luffy \"Diwali Special\" Edit [Edit/AMV]", color: "#facc15", views: 3073, likes: 169, comments: 0, duration: 26, date: 6 }, 
-            { id: "_ODF4nvlS8w", title: "Bad Guy - Sukuna Badass Edit \"Jujutsu Kaisen S2\" [Edit/AMV]", color: "#991b1b", views: 68, likes: 10, comments: 0, duration: 58, date: 5 }, 
-            { id: "PHpc3L1qZYE", title: "You Look Lonely X Memory Reboot - Gojo Edit [Edit/AMV]", color: "#8b5cf6", views: 606, likes: 32, comments: 0, duration: 47, date: 4 }, 
-            { id: "v8E-EI56P5I", title: "Such a Wh$re - Nanami Badass Edit [Edit/AMV]", color: "#fcd34d", views: 318, likes: 13, comments: 0, duration: 34, date: 3 }, 
-            { id: "kbRswznyi7A", title: "Without Me {Halsey} - A Silent Voice [Edit/AMV]", color: "#93c5fd", views: 349, likes: 0, comments: 0, duration: 31, date: 2 }, 
-            { id: "nBB8aY72Ltc", title: "Look At Me - Yuji Vs Choso [Edit/AMV]", color: "#dc2626", views: 269, likes: 0, comments: 0, duration: 32, date: 1 } 
-        ];
-
-        const galleryList = document.querySelector('.gallery-list');
-        const sortTabs = document.querySelectorAll('.sort-tab');
-        
-        // Helper to format large numbers (e.g. 15400 -> 15.4K)
-        function formatNumber(num) {
-            if (num >= 1000) {
-                return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-            }
-            return num;
-        }
-
-        // Function to render the video gallery based on an array
-        function renderGallery(videos) {
-            galleryList.innerHTML = ''; // Clear current state
-            
-            videos.forEach(video => {
-                const videoCard = document.createElement('a');
-                videoCard.href = `https://www.youtube.com/watch?v=${video.id}`;
-                videoCard.target = "_blank";
-                videoCard.rel = "noopener noreferrer";
-                videoCard.className = 'glass-effect';
-                
-                if (video.color) {
-                    videoCard.style.setProperty('--border-color', video.color);
-                }
-
-                // Changed to hqdefault.jpg to ensure smaller thumbnails for older videos always load
-                videoCard.innerHTML = `
-                    <div class="video-container">
-                        <img src="https://img.youtube.com/vi/${video.id}/hqdefault.jpg" alt="${video.title.replace(/"/g, '&quot;')}">
-                        <div class="play-overlay">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="video-info">
-                        <span class="badge" style="background: ${video.color}20; color: ${video.color}; border: 1px solid ${video.color}40;">Edit</span>
-                        <h3>${video.title}</h3>
-                    </div>
-                    <div class="video-stats">
-                        <span class="stat-item" title="Views">
-                            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                            ${formatNumber(video.views)}
-                        </span>
-                        <span class="stat-item" title="Likes">
-                            <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
-                            ${formatNumber(video.likes)}
-                        </span>
-                        <span class="stat-item" title="Comments">
-                            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                            ${formatNumber(video.comments)}
-                        </span>
-                    </div>
-                `;
-                
-                videoCard.addEventListener("mousemove", (e) => {
-                    const rect = videoCard.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    videoCard.style.setProperty("--x", `${x}px`);
-                    videoCard.style.setProperty("--y", `${y}px`);
-                });
-
-                galleryList.appendChild(videoCard);
-            });
-        }
-
-        // Sorting Logic
-        sortTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Update active class
-                sortTabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-
-                const sortType = tab.getAttribute('data-sort');
-                let sortedArray = [...youtubeVideos];
-
-                if (sortType === 'recent') {
-                    // Highest date value is most recent
-                    sortedArray.sort((a, b) => b.date - a.date);
-                } else if (sortType === 'views') {
-                    sortedArray.sort((a, b) => b.views - a.views);
-                } else if (sortType === 'longest') {
-                    sortedArray.sort((a, b) => b.duration - a.duration);
-                }
-
-                renderGallery(sortedArray);
-            });
-        });
-
-        // Initial render (defaults to recent)
-        renderGallery([...youtubeVideos].sort((a, b) => b.date - a.date));
-    </script>
+  </section>
+
+  <div class="gallery-header">
+    <span style="text-align:center">#</span>
+    <span></span>
+    <span>Title</span>
+    <div class="gh-stats">
+      <span>Views</span>
+      <span>Likes</span>
+      <span>Time</span>
+    </div>
+  </div>
+
+  <div class="gallery-list" id="gallery-list"></div>
+</main>
+
+<div class="source-box">
+  <h4>Source</h4>
+  <a href="https://www.youtube.com/@PSYKO7" target="_blank" rel="noopener noreferrer">@PSYKO7</a>
+</div>
+
+<footer><p>crafted with elegance &nbsp;·&nbsp; &copy; 2026</p></footer>
+
+<script>
+(function(){
+  const container=document.getElementById('floating-lines-container');
+  if(!container||typeof THREE==='undefined')return;
+  const vS=`precision highp float;void main(){gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`;
+  const fS=`precision highp float;
+uniform float iTime;uniform vec3 iResolution;uniform float animationSpeed;
+uniform bool enableTop,enableMiddle,enableBottom;
+uniform int topLineCount,middleLineCount,bottomLineCount;
+uniform float topLineDistance,middleLineDistance,bottomLineDistance;
+uniform vec3 topWavePosition,middleWavePosition,bottomWavePosition;
+uniform vec2 iMouse;uniform bool interactive;
+uniform float bendRadius,bendStrength,bendInfluence;
+uniform bool parallax;uniform vec2 parallaxOffset;
+uniform vec3 lineGradient[8];uniform int lineGradientCount;
+const vec3 BK=vec3(0.0),PK=vec3(233.,71.,245.)/255.,BL=vec3(47.,75.,162.)/255.;
+mat2 rot(float r){return mat2(cos(r),sin(r),-sin(r),cos(r));}
+vec3 bgc(vec2 uv){vec3 c=vec3(0.);float y=sin(uv.x-.2)*.3-.1;float m=uv.y-y;c+=mix(BL,BK,smoothstep(0.,1.,abs(m)));c+=mix(PK,BK,smoothstep(0.,1.,abs(m-.8)));return c*.5;}
+vec3 glc(float t,vec3 b){if(lineGradientCount<=0)return b;if(lineGradientCount==1)return lineGradient[0]*.5;float s=clamp(t,0.,.9999)*float(lineGradientCount-1);int i=int(floor(s));return mix(lineGradient[i],lineGradient[min(i+1,lineGradientCount-1)],fract(s))*.5;}
+float wave(vec2 uv,float off,vec2 su,vec2 mu,bool bend){float t=iTime*animationSpeed;float y=sin(uv.x+off+t*.1)*(sin(off+t*.2)*.3);if(bend){vec2 d=su-mu;y+=(mu.y-su.y)*exp(-dot(d,d)*bendRadius)*bendStrength*bendInfluence;}return .0175/max(abs(uv.y-y)+.01,1e-3)+.01;}
+void main(){
+  vec2 uv=(2.*gl_FragCoord.xy-iResolution.xy)/iResolution.y;uv.y*=-1.;
+  if(parallax)uv+=parallaxOffset;
+  vec3 col=vec3(0.),b=lineGradientCount>0?vec3(0.):bgc(uv);
+  vec2 mu=vec2(0.);if(interactive){mu=(2.*iMouse-iResolution.xy)/iResolution.y;mu.y*=-1.;}
+  if(enableBottom)for(int i=0;i<6;++i){if(i>=bottomLineCount)break;float fi=float(i),t=fi/max(float(bottomLineCount-1),1.);vec2 r=uv*rot(bottomWavePosition.z*log(length(uv)+1.));col+=glc(t,b)*wave(r+vec2(bottomLineDistance*fi+bottomWavePosition.x,bottomWavePosition.y),1.5+.2*fi,uv,mu,interactive)*.2;}
+  if(enableMiddle)for(int i=0;i<6;++i){if(i>=middleLineCount)break;float fi=float(i),t=fi/max(float(bottomLineCount-1),1.);vec2 r=uv*rot(middleWavePosition.z*log(length(uv)+1.));col+=glc(t,b)*wave(r+vec2(middleLineDistance*fi+middleWavePosition.x,middleWavePosition.y),2.+.15*fi,uv,mu,interactive);}
+  if(enableTop)for(int i=0;i<6;++i){if(i>=topLineCount)break;float fi=float(i),t=fi/max(float(topLineCount-1),1.);vec2 r=uv*rot(topWavePosition.z*log(length(uv)+1.));r.x*=-1.;col+=glc(t,b)*wave(r+vec2(topLineDistance*fi+topWavePosition.x,topWavePosition.y),1.+.2*fi,uv,mu,interactive)*.1;}
+  gl_FragColor=vec4(col,1.);}`;
+
+  const sc=new THREE.Scene(),cam=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+  cam.position.z=1;
+  const ren=new THREE.WebGLRenderer({antialias:true,alpha:true});
+  ren.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  ren.setClearColor(0,0);
+  ren.domElement.style.cssText='width:100%;height:100%;position:absolute;top:0;left:0;';
+  container.appendChild(ren.domElement);
+
+  const u={
+    iTime:{value:0},iResolution:{value:new THREE.Vector3()},animationSpeed:{value:1},
+    enableTop:{value:true},enableMiddle:{value:true},enableBottom:{value:true},
+    topLineCount:{value:6},middleLineCount:{value:6},bottomLineCount:{value:6},
+    topLineDistance:{value:.05},middleLineDistance:{value:.05},bottomLineDistance:{value:.05},
+    topWavePosition:{value:new THREE.Vector3(10,.5,-.4)},
+    middleWavePosition:{value:new THREE.Vector3(5,0,.2)},
+    bottomWavePosition:{value:new THREE.Vector3(2,-.7,-1)},
+    iMouse:{value:new THREE.Vector2(-1000,-1000)},interactive:{value:true},
+    bendRadius:{value:5},bendStrength:{value:-.5},bendInfluence:{value:0},
+    parallax:{value:true},parallaxOffset:{value:new THREE.Vector2()},
+    lineGradient:{value:Array.from({length:8},()=>new THREE.Vector3(1,1,1))},lineGradientCount:{value:0}
+  };
+  sc.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),new THREE.ShaderMaterial({uniforms:u,vertexShader:vS,fragmentShader:fS,transparent:true})));
+
+  const clk=new THREE.Clock();
+  let tM=new THREE.Vector2(-1000,-1000),cM=new THREE.Vector2(-1000,-1000),tI=0,cI=0,tP=new THREE.Vector2(),cP=new THREE.Vector2();
+  const resize=()=>{const w=window.innerWidth,h=window.innerHeight;ren.setSize(w,h,false);u.iResolution.value.set(ren.domElement.width,ren.domElement.height,1);};
+  resize();window.addEventListener('resize',resize);
+  window.addEventListener('pointermove',e=>{const d=ren.domElement,r=d.getBoundingClientRect(),p=ren.getPixelRatio();tM.set((e.clientX-r.left)*p,(r.height-(e.clientY-r.top))*p);tI=1;tP.set((e.clientX-r.width/2)/r.width*.2,-(e.clientY-r.height/2)/r.height*.2);});
+  window.addEventListener('pointerleave',()=>tI=0);
+  (function loop(){u.iTime.value=clk.getElapsedTime();cM.lerp(tM,.05);u.iMouse.value.copy(cM);cI+=(tI-cI)*.05;u.bendInfluence.value=cI;cP.lerp(tP,.05);u.parallaxOffset.value.copy(cP);ren.render(sc,cam);requestAnimationFrame(loop);})();
+})();
+
+const videos=[
+  {id:"8NspLIRfjog",title:"Childish Gambino - Joker Edit",color:"#d92626",views:27,likes:6,duration:46,date:41},
+  {id:"PcbSi3Nnk9c",title:"W2MS - GTA 6 Trailer [Edit/AMV]",color:"#e84c88",views:24,likes:2,duration:39,date:40},
+  {id:"uR-iSU5b8cU",title:"Come Home - Cyberpunk Edgerunners [Edit/AMV]",color:"#fcee0a",views:47,likes:7,duration:53,date:39},
+  {id:"7t3qC7_qwpg",title:"Blue - Chainsaw Man \"Reze Arc\" [Edit/AMV]",color:"#3b82f6",views:32,likes:2,duration:33,date:38},
+  {id:"L3t6OQv-sGM",title:"Espresso - One Piece \"Luffy\" Quick Edit [Edit/AMV]",color:"#fca5a5",views:90,likes:5,duration:16,date:37},
+  {id:"kh4XpT2LLuU",title:"Gata Only - Mei Mei \"JJK\" [Edit/AMV]",color:"#9ca3af",views:369,likes:7,duration:26,date:36},
+  {id:"W3YzpSOtryM",title:"The Ghetto Christmas Carol - Gojo vs Toji [Edit/AMV]",color:"#4b5563",views:52,likes:3,duration:62,date:35},
+  {id:"cvd6-x6Q0_c",title:"Re-Up - Gojo Quick Edit [Edit/AMV]",color:"#8b5cf6",views:26,likes:4,duration:23,date:34},
+  {id:"n3mUpWu0H9s",title:"I Love the Way You Kiss Me - Tokyo Ghoul [Edit/AMV]",color:"#dc2626",views:554,likes:29,duration:41,date:33},
+  {id:"LP6RQyuBCEE",title:"My Ordinary Life - Solo Leveling [Edit/AMV]",color:"#60a5fa",views:135,likes:10,duration:49,date:32},
+  {id:"Zuw7QY5eiLI",title:"CATACLYSM - Shadow Fight 2 [Edit/GMV]",color:"#374151",views:142,likes:18,duration:36,date:31},
+  {id:"4_MfejZn_vc",title:"Lifeline - Naruto vs Sasuke Quick Edit [Edit/AMV]",color:"#3b82f6",views:36,likes:5,duration:21,date:30},
+  {id:"D5Xy0GmFRiE",title:"Bullseye - Demon Slayer Edit [Edit/AMV]",color:"#ed8936",views:333,likes:17,duration:34,date:29},
+  {id:"6U5un-hhxGc",title:"Death Is No More - Kaiju No. 8 Edit [Edit/AMV]",color:"#10b981",views:1724,likes:23,duration:43,date:28},
+  {id:"2dxH2LdHYck",title:"FUNK Estranho - Demon Slayer \"Sanemi & Obanai\" [Edit/AMV]",color:"#a855f7",views:1059,likes:53,duration:39,date:27},
+  {id:"0SgoJaKCvlE",title:"Moth to a Flame - DBZ \"Gohan SSJ2 vs Cell\" [Edit/AMV]",color:"#f59e0b",views:311,likes:8,duration:56,date:26},
+  {id:"BBlSLawy1ZM",title:"Flawless - Anime Mix Edit [Edit/AMV]",color:"#ec4899",views:302,likes:18,duration:29,date:25},
+  {id:"I73hz_qLej0",title:"Love is Violence - Anime Mix Edit [Edit/AMV]",color:"#ef4444",views:1264,likes:40,duration:31,date:24},
+  {id:"ywLi_MKaX_Q",title:"Flaws & Sins - Wind Breaker Edit [Edit/AMV]",color:"#d1d5db",views:443,likes:20,duration:36,date:23},
+  {id:"T9lrOy4ba-Y",title:"500lbs - One Piece \"Luffy vs Lucci\" [Edit/AMV]",color:"#ef4444",views:893,likes:34,duration:45,date:22},
+  {id:"T15ycMKcAiY",title:"Higher - Anime Mix \"100 Subs Special\" [Edit/AMV]",color:"#ffd700",views:254,likes:10,duration:76,date:21},
+  {id:"nNMKJpRDhqw",title:"One Call - HxH \"Gon Vs Hisoka\" [Edit/AMV]",color:"#8b5cf6",views:497,likes:16,duration:47,date:20},
+  {id:"93pZBIVd-xw",title:"VVV - Black Clover \"Asta Vs Wizard King\" [Edit/AMV]",color:"#db2777",views:2548,likes:101,duration:19,date:19},
+  {id:"3sYb_xfahnc",title:"I Wanna Be Your Slave - Fire Force Quick Edit [Edit/AMV]",color:"#fb923c",views:73,likes:12,duration:26,date:18},
+  {id:"kD3p25hvQqQ",title:"MAMI! - Luffy Gear 5 One Piece [Edit/AMV]",color:"#e2e8f0",views:1216,likes:53,duration:51,date:17},
+  {id:"ZPcs9SktfBA",title:"Funk Of The Damned - Chainsaw Man vs Katana Man [Edit/AMV]",color:"#dc2626",views:502,likes:14,duration:34,date:16},
+  {id:"Q9Iqq0RVO9c",title:"Empathy - Solo Leveling \"Sun Jin Woo\" [Edit/AMV]",color:"#60a5fa",views:660,likes:25,duration:59,date:15},
+  {id:"zJSSRd2rvBU",title:"Eyes Don't Lie - Gojo vs Toji Quick Edit [Edit/AMV]",color:"#8b5cf6",views:312,likes:11,duration:37,date:14},
+  {id:"SYjWZs8RxkA",title:"Orquestra Maldita - Yuta Edit \"JJK 0\" [Edit/AMV]",color:"#d946ef",views:505,likes:17,duration:30,date:13},
+  {id:"-37k4p0EXsU",title:"Rapture - GTA 6 Trailer Edit",color:"#f472b6",views:8208,likes:391,duration:82,date:12},
+  {id:"kX6aa5jmIEU",title:"Cardigan - Eren Yeager \"Freedom\" Edit [Edit/AMV]",color:"#ef4444",views:6226,likes:369,duration:38,date:11},
+  {id:"et3DeM6GPyg",title:"Devil Eyes - Madara X Sukuna Badass Edit [Edit/AMV]",color:"#dc2626",views:734,likes:29,duration:66,date:10},
+  {id:"3_-HpTPRy8o",title:"Mexican Phonk Eki - Luffy Gear 5 X Gojo Awakening [Edit/AMV]",color:"#e2e8f0",views:649,likes:28,duration:54,date:9},
+  {id:"pZk_aDVWo8o",title:"Blood & Water - Sukuna VS Mahoraga \"JJK S2\" [Edit/AMV]",color:"#ea580c",views:565,likes:25,duration:50,date:8},
+  {id:"TRtC7H6plhk",title:"Life In Rio - Sukuna VS Jogo Badass Edit [Edit/AMV]",color:"#ef4444",views:4538,likes:114,duration:41,date:7},
+  {id:"Ljlcbz50FSU",title:"I'm Good - Luffy \"Diwali Special\" Edit [Edit/AMV]",color:"#facc15",views:3073,likes:169,duration:27,date:6},
+  {id:"_ODF4nvlS8w",title:"Bad Guy - Sukuna Badass Edit \"JJK S2\" [Edit/AMV]",color:"#991b1b",views:68,likes:10,duration:59,date:5},
+  {id:"PHpc3L1qZYE",title:"You Look Lonely X Memory Reboot - Gojo Edit [Edit/AMV]",color:"#8b5cf6",views:606,likes:32,duration:48,date:4},
+  {id:"v8E-EI56P5I",title:"Such a Wh$re - Nanami Badass Edit [Edit/AMV]",color:"#fcd34d",views:318,likes:13,duration:35,date:3},
+  {id:"kbRswznyi7A",title:"Without Me (Halsey) - A Silent Voice [Edit/AMV]",color:"#93c5fd",views:349,likes:0,duration:32,date:2},
+  {id:"nBB8aY72Ltc",title:"Look At Me - Yuji Vs Choso [Edit/AMV]",color:"#dc2626",views:269,likes:0,duration:33,date:1}
+];
+
+function fmt(n){return n>=1000?(n/1000).toFixed(1).replace(/\.0$/,'')+'K':String(n)}
+function fmtD(s){return Math.floor(s/60)+':'+(s%60+'').padStart(2,'0')}
+
+function extractSeries(title){
+  const m=title.match(/"([^"]+)"/);
+  return m?m[1]:'';
+}
+
+function renderGallery(arr){
+  const gl=document.getElementById('gallery-list');
+  gl.innerHTML='';
+  arr.forEach((v,i)=>{
+    const series=extractSeries(v.title);
+    const cleanTitle=v.title.replace(/"[^"]*"/g,'').replace(/\[Edit\/[A-Z]+\]/g,'').replace(/\s{2,}/g,' ').trim();
+    const a=document.createElement('a');
+    a.href=`https://www.youtube.com/watch?v=${v.id}`;
+    a.target='_blank';a.rel='noopener noreferrer';
+    a.className='vitem';
+    a.innerHTML=`
+      <span class="vitem-index">${String(i+1).padStart(2,'0')}</span>
+      <div class="vitem-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="vitem-thumb">
+        <img src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" alt="" loading="lazy">
+        <div class="vitem-thumb-dot" style="background:${v.color}"></div>
+      </div>
+      <div class="vitem-info">
+        <span class="vitem-title">${cleanTitle}</span>
+        <div class="vitem-meta">
+          <span class="vitem-tag" style="background:${v.color}18;color:${v.color};border:1px solid ${v.color}30">Edit</span>
+          ${series?`<span class="vitem-series">${series}</span>`:''}
+        </div>
+      </div>
+      <div class="vitem-stats">
+        <span class="vitem-stat"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${fmt(v.views)}</span>
+        <span class="vitem-stat"><svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>${fmt(v.likes)}</span>
+        <span class="vitem-dur">${fmtD(v.duration)}</span>
+      </div>`;
+    gl.appendChild(a);
+  });
+}
+
+document.querySelectorAll('.sort-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.sort-tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const s=t.dataset.sort;
+    renderGallery([...videos].sort((a,b)=>{
+      if(s==='recent') return b.date-a.date;
+      if(s==='views') return b.views-a.views;
+      if(s==='longest') return b.duration-a.duration;
+      return a.duration-b.duration; // shortest
+    }));
+  });
+});
+
+renderGallery([...videos].sort((a,b)=>b.date-a.date));
+</script>
 </body>
 </html>

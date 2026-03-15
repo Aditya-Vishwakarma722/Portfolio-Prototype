@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aditya Vishwakarma | Resume</title>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;600;700;800;900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07070a;--surface:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.07);
+  --text:#e2e2e8;--muted:#606070;--dim:#404050;
+  --cyan:#06b6d4;--cyan2:#0891b2;--purple:#7c3aed;
+  --font:'Raleway',sans-serif;--mono:'JetBrains Mono',monospace
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--text);background:var(--bg);min-height:100vh;overflow-x:hidden}
+
+/* ── CANVAS BG ── */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:1}
+.bg-fade{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 120% 60% at 50% -10%,rgba(6,182,212,0.03) 0%,transparent 60%),
+  linear-gradient(to bottom,rgba(7,7,10,0.15) 0%,rgba(7,7,10,0.55) 50%,rgba(7,7,10,0.92) 100%)}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 5%;backdrop-filter:blur(20px);
+  background:rgba(7,7,10,0.7);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:var(--mono);font-size:0.8rem;color:var(--cyan);letter-spacing:2px}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{font-size:0.75rem;color:var(--muted);text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;transition:color 0.2s;font-family:var(--mono)}
+.nav-links a:hover{color:var(--text)}
+.nav-print{display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.9rem;border:1px solid rgba(6,182,212,0.3);border-radius:4px;color:var(--cyan);font-size:0.72rem;cursor:pointer;text-decoration:none;transition:all 0.2s;font-family:var(--mono);background:rgba(6,182,212,0.05)}
+.nav-print:hover{background:rgba(6,182,212,0.1);border-color:var(--cyan)}
+.nav-print svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
+.portfolio-back-box{position:fixed;top:5.5rem;right:5%;z-index:90;
+  display:inline-flex;align-items:center;gap:0.6rem;padding:0.6rem 1rem;
+  background:rgba(15,15,20,0.92);backdrop-filter:blur(15px);
+  border:1px solid var(--border);border-radius:10px;
+  color:var(--muted);font-size:0.75rem;text-decoration:none;
+  transition:all 0.3s cubic-bezier(0.1, 0, 0.3, 1);font-family:var(--mono);
+  text-transform:uppercase;letter-spacing:1px;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
+.portfolio-back-box:hover{transform:translateY(-3px);border-color:var(--cyan);color:var(--text);box-shadow:0 8px 20px rgba(0,0,0,0.4)}
+.portfolio-back-box svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.5;fill:none}
+
+/* ── HERO ── */
+.hero{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:8rem 5% 5rem;max-width:1200px;margin:0 auto}
+.hero-tag{font-family:var(--mono);font-size:0.7rem;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.8rem}
+.hero-tag::before{content:'';width:32px;height:1px;background:var(--cyan)}
+.hero-name{font-size:clamp(3.5rem,9vw,8rem);font-weight:800;letter-spacing:-4px;line-height:0.95;color:#fff;margin-bottom:1rem}
+.hero-name .first{display:block;opacity:0;animation:slideBlur 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s forwards}
+.hero-name .last{display:block;opacity:0;animation:slideBlur 0.9s cubic-bezier(0.22,1,0.36,1) 0.45s forwards}
+@keyframes slideBlur{
+  0%{opacity:0;transform:translateX(-80px);filter:blur(18px)}
+  60%{opacity:1;filter:blur(2px)}
+  100%{opacity:1;transform:translateX(0);filter:blur(0)}
+}
+.hero-name .last{display:block;font-style:normal;font-weight:800;letter-spacing:-4px;background:linear-gradient(90deg,var(--cyan) 0%,#a5f3fc 50%,var(--cyan) 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;opacity:0;animation:slideBlur 0.9s cubic-bezier(0.22,1,0.36,1) 0.45s forwards}
+.hero-role{font-family:var(--mono);font-size:0.9rem;color:var(--muted);letter-spacing:2px;margin-bottom:3rem;display:flex;align-items:center;gap:0.8rem}
+.hero-role::after{content:'';flex:1;max-width:120px;height:1px;background:var(--border)}
+.hero-contacts{display:flex;flex-wrap:wrap;gap:0.8rem;margin-bottom:4rem}
+.contact-pill{display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:50px;font-size:0.75rem;color:var(--muted);text-decoration:none;transition:all 0.25s;font-family:var(--mono)}
+.contact-pill:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(6,182,212,0.05)}
+.contact-pill svg{width:13px;height:13px;fill:currentColor}
+.hero-scroll{font-family:var(--mono);font-size:0.65rem;color:var(--dim);letter-spacing:3px;text-transform:uppercase;display:flex;align-items:center;gap:0.8rem}
+.hero-scroll::after{content:'';width:60px;height:1px;background:var(--dim)}
+
+/* ── MAIN ── */
+.page{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:0 5% 8rem;display:grid;grid-template-columns:280px 1fr;gap:5rem;align-items:start}
+
+/* ── SIDEBAR ── */
+.sidebar{position:sticky;top:6rem}
+.sidebar-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.2rem;transition:transform 0.4s cubic-bezier(0.1, 0, 0.3, 1), box-shadow 0.4s ease, border-color 0.3s ease;will-change:transform}
+.sidebar-card:hover{transform:translateY(-5px);border-color:rgba(6,182,212,0.3);box-shadow:0 10px 25px -10px rgba(0,0,0,0.5)}
+.sidebar-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
+.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cyan);margin-right:0.5rem;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(6,182,212,0.4)}50%{box-shadow:0 0 0 5px rgba(6,182,212,0)}}
+.sidebar-stat{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--border);font-size:0.78rem}
+.sidebar-stat:last-child{border-bottom:none}
+.sidebar-stat-label{color:var(--muted);font-family:var(--mono);font-size:0.7rem}
+.sidebar-stat-val{color:var(--text);font-weight:600;font-size:0.8rem}
+.lang-bar{margin-bottom:0.9rem}
+.lang-bar-top{display:flex;justify-content:space-between;font-size:0.72rem;margin-bottom:0.4rem}
+.lang-bar-top span:first-child{color:var(--text)}
+.lang-bar-top span:last-child{color:var(--muted);font-family:var(--mono)}
+.lang-track{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
+.lang-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--cyan2),var(--cyan))}
+.skill-pill{display:inline-block;padding:0.25rem 0.6rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:4px;font-size:0.65rem;color:var(--muted);font-family:var(--mono);margin:0.2rem;transition:all 0.2s;cursor:default}
+.skill-pill:hover{border-color:var(--cyan);color:var(--cyan)}
+.skill-pill.highlight{border-color:rgba(6,182,212,0.25);color:var(--cyan);background:rgba(6,182,212,0.06)}
+
+/* ── CONTENT ── */
+.content section{margin-bottom:5rem}
+.section-header{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem}
+.section-num{font-family:var(--mono);font-size:0.65rem;color:var(--cyan);letter-spacing:2px;min-width:30px}
+.section-title{font-size:1.6rem;font-weight:700;letter-spacing:-0.5px;color:#fff}
+.section-line{flex:1;height:1px;background:var(--border)}
+
+/* objective */
+.objective-text{font-size:1.05rem;line-height:1.9;color:var(--muted);font-weight:300;position:relative;padding-left:1.5rem;border-left:2px solid var(--cyan)}
+.objective-text strong{color:var(--text);font-weight:500}
+
+/* education */
+.edu-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;position:relative;overflow:hidden;transition:transform 0.4s cubic-bezier(0.1, 0, 0.3, 1), border-color 0.2s, box-shadow 0.4s ease;will-change:transform}
+.edu-card:hover{border-color:rgba(6,182,212,0.25);transform:translateY(-8px);box-shadow:0 15px 35px -15px rgba(0,0,0,0.6)}
+.edu-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--purple))}
+.edu-degree{font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:0.4rem}
+.edu-school{font-size:0.9rem;color:var(--muted);margin-bottom:1rem}
+.edu-meta{display:flex;gap:1rem;flex-wrap:wrap}
+.edu-chip{font-family:var(--mono);font-size:0.68rem;padding:0.3rem 0.7rem;background:rgba(6,182,212,0.07);border:1px solid rgba(6,182,212,0.15);border-radius:4px;color:var(--cyan)}
+
+/* skills */
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.skill-group{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem;transition:transform 0.4s cubic-bezier(0.1, 0, 0.3, 1), border-color 0.2s, box-shadow 0.4s ease;will-change:transform}
+.skill-group:hover{border-color:rgba(6,182,212,0.2);transform:translateY(-6px);box-shadow:0 12px 25px -10px rgba(0,0,0,0.5)}
+.skill-group-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);margin-bottom:1rem}
+.skill-items{display:flex;flex-wrap:wrap;gap:0.4rem}
+.skill-item{font-family:var(--mono);font-size:0.72rem;padding:0.3rem 0.65rem;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:4px;color:var(--text);transition:all 0.2s}
+.skill-item:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* projects */
+.proj-item{border:1px solid var(--border);border-radius:10px;padding:1.6rem;margin-bottom:1.2rem;background:var(--surface);transition:transform 0.4s cubic-bezier(0.1, 0, 0.3, 1), background 0.2s, border-color 0.2s, box-shadow 0.4s ease;position:relative;overflow:hidden;will-change:transform}
+.proj-item:hover{border-color:rgba(6,182,212,0.25);background:rgba(255,255,255,0.04);transform:translateY(-6px);box-shadow:0 12px 30px -15px rgba(0,0,0,0.6)}
+.proj-item::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--cyan),var(--purple));opacity:0;transition:opacity 0.2s}
+.proj-item:hover::after{opacity:1}
+.proj-title{font-size:0.95rem;font-weight:600;color:#fff;margin-bottom:0.5rem}
+.proj-desc{font-size:0.82rem;color:var(--muted);line-height:1.7;font-weight:300}
+
+/* additional */
+.add-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.add-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem;transition:transform 0.4s cubic-bezier(0.1, 0, 0.3, 1), border-color 0.2s, box-shadow 0.4s ease;will-change:transform}
+.add-card:hover{border-color:rgba(6,182,212,0.2);transform:translateY(-6px);box-shadow:0 12px 25px -10px rgba(0,0,0,0.5)}
+.add-icon{width:36px;height:36px;border-radius:8px;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.15);display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.add-icon svg{width:16px;height:16px;stroke:var(--cyan);stroke-width:2;fill:none}
+.add-title{font-size:0.88rem;font-weight:600;color:#fff;margin-bottom:0.3rem}
+.add-desc{font-size:0.75rem;color:var(--muted);line-height:1.6;font-weight:300}
+
+/* footer */
+.resume-footer{position:relative;z-index:10;text-align:center;padding:3rem 0;border-top:1px solid var(--border);color:var(--dim);font-size:0.68rem;letter-spacing:2px;font-family:var(--mono)}
+
+@media(max-width:768px){
+  .page{grid-template-columns:1fr;gap:3rem}
+  .sidebar{position:static}
+  .skills-grid,.add-grid{grid-template-columns:1fr}
+  .hero-name{letter-spacing:-3px}
+  nav .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas" style="position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%"></canvas>
+<div class="bg-fade"></div>
+
+<nav>
+  <span class="nav-logo">AV_PORTFOLIO</span>
+  <div class="nav-links">
+    <a href="#objective">objective</a>
+    <a href="#education">education</a>
+    <a href="#skills">skills</a>
+    <a href="#projects">projects</a>
+  </div>
+  <a href="#" onclick="window.print();return false" class="nav-print">
+    <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    print / pdf
+  </a>
+</nav>
+
+<a href="../Prototype.html" class="portfolio-back-box">
+  <svg viewBox="0 0 24 24"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+  Portfolio
+</a>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">portfolio · resume · 2026</div>
+  <h1 class="hero-name">
+    <span class="first">Aditya</span>
+    <span class="last">Vishwakarma</span>
+  </h1>
+  <div class="hero-role">B.Tech CSE · 2nd Year · ACET Surampalem</div>
+  <div class="hero-contacts">
+    <a href="mailto:adityavishwa616@gmail.com" class="contact-pill">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      adityavishwa616@gmail.com
+    </a>
+    <a href="https://github.com/Aditya-Vishwakarma722" target="_blank" class="contact-pill">
+      <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+      Aditya-Vishwakarma722
+    </a>
+    <a href="https://www.linkedin.com/in/aditya-vishwakarma-b700b2331" target="_blank" class="contact-pill">
+      <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      linkedin
+    </a>
+    <a href="https://www.instagram.com/psy.cho_070/" target="_blank" class="contact-pill">
+      <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      psy.cho_070
+    </a>
+  </div>
+  <div class="hero-scroll">scroll to explore</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-label"><span class="status-dot"></span>status</div>
+      <div class="sidebar-stat"><span class="sidebar-stat-label">availability</span><span class="sidebar-stat-val" style="color:var(--cyan)">open to work</span></div>
+      <div class="sidebar-stat"><span class="sidebar-stat-label">year</span><span class="sidebar-stat-val">2nd Year</span></div>
+      <div class="sidebar-stat"><span class="sidebar-stat-label">batch</span><span class="sidebar-stat-val">2024 – 2028</span></div>
+      <div class="sidebar-stat"><span class="sidebar-stat-label">location</span><span class="sidebar-stat-val">Surampalem, AP</span></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-label">languages known</div>
+      <div class="lang-bar">
+        <div class="lang-bar-top"><span>English</span><span>Fluent</span></div>
+        <div class="lang-track"><div class="lang-fill" style="width:92%"></div></div>
+      </div>
+      <div class="lang-bar">
+        <div class="lang-bar-top"><span>Hindi</span><span>Native</span></div>
+        <div class="lang-track"><div class="lang-fill" style="width:98%"></div></div>
+      </div>
+      <div class="lang-bar">
+        <div class="lang-bar-top"><span>Japanese</span><span>Beginner</span></div>
+        <div class="lang-track"><div class="lang-fill" style="width:18%"></div></div>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-label">quick skills</div>
+      <div>
+        <span class="skill-pill highlight">Java</span>
+        <span class="skill-pill highlight">C</span>
+        <span class="skill-pill highlight">DSA</span>
+        <span class="skill-pill">SQL</span>
+        <span class="skill-pill">Git</span>
+        <span class="skill-pill">OOP</span>
+        <span class="skill-pill">Blender</span>
+        <span class="skill-pill">After Effects</span>
+        <span class="skill-pill">IntelliJ</span>
+        <span class="skill-pill">DBMS</span>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-label">target roles</div>
+      <div>
+        <span class="skill-pill highlight">Java Backend Dev</span>
+        <span class="skill-pill highlight">Software Developer</span>
+        <span class="skill-pill highlight">Game Developer</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- OBJECTIVE -->
+    <section id="objective">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2 class="section-title">Career Objective</h2>
+        <div class="section-line"></div>
+      </div>
+      <p class="objective-text">
+        Focused and motivated Computer Science student aiming for roles such as <strong>Java Backend Developer</strong>, <strong>Software Developer</strong>, or <strong>Game Developer</strong>. Strong in <strong>Data Structures and Algorithms</strong>, actively solving problems on online platforms, and deeply interested in <strong>gaming and game development</strong>.
+      </p>
+    </section>
+
+    <!-- EDUCATION -->
+    <section id="education">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2 class="section-title">Education</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-degree">Bachelor of Technology — Computer Science & Engineering</div>
+        <div class="edu-school">Aditya College of Engineering & Technology (ACET), Surampalem, Andhra Pradesh</div>
+        <div class="edu-meta">
+          <span class="edu-chip">2024 – 2028 (Expected)</span>
+          <span class="edu-chip">2nd Year</span>
+          <span class="edu-chip">B.Tech CSE</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2 class="section-title">Technical Skills</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-group">
+          <div class="skill-group-label">programming languages</div>
+          <div class="skill-items">
+            <span class="skill-item">Java</span>
+            <span class="skill-item">C</span>
+            <span class="skill-item">Git</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label">database</div>
+          <div class="skill-items">
+            <span class="skill-item">SQL</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label">core CS concepts</div>
+          <div class="skill-items">
+            <span class="skill-item">Data Structures</span>
+            <span class="skill-item">Algorithms</span>
+            <span class="skill-item">OOP</span>
+            <span class="skill-item">DBMS</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label">tools & software</div>
+          <div class="skill-items">
+            <span class="skill-item">After Effects</span>
+            <span class="skill-item">Blender</span>
+            <span class="skill-item">IntelliJ IDEA</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2 class="section-title">Projects & Practice</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="proj-item">
+        <div class="proj-title">Academic & Logic Programs — C / Java</div>
+        <div class="proj-desc">Developed a range of academic programs and logic-based solutions using C and Java. Focus on clean algorithm design, efficient data structures, and object-oriented principles applied to real problem scenarios.</div>
+      </div>
+      <div class="proj-item">
+        <div class="proj-title">DSA Problem Solving — Competitive Platforms</div>
+        <div class="proj-desc">Regularly practising Data Structures and Algorithms on competitive programming platforms. Strong grasp of algorithm design and optimization — covering sorting, searching, recursion, dynamic programming, and graph traversal.</div>
+      </div>
+      <div class="proj-item">
+        <div class="proj-title">3D Assets & Animations — Blender / After Effects</div>
+        <div class="proj-desc">Created basic 3D models, animations, and visual effects using Blender and After Effects. Exploring procedural shading, rendering pipelines, and motion graphics as a creative extension alongside core CS work.</div>
+      </div>
+    </section>
+
+    <!-- ADDITIONAL -->
+    <section id="additional">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2 class="section-title">Additional Learning</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="add-grid">
+        <div class="add-card">
+          <div class="add-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div class="add-title">Japanese Language (JLPT)</div>
+          <div class="add-desc">Preparing for the Japanese Language Proficiency Test. Currently at beginner level, building vocabulary and grammar foundations.</div>
+        </div>
+        <div class="add-card">
+          <div class="add-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <div class="add-title">Java Backend & Game Dev</div>
+          <div class="add-desc">Exploring Java backend systems, REST APIs, and game development fundamentals — working toward building full-stack and game projects.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="resume-footer">aditya vishwakarma &nbsp;·&nbsp; b.tech cse &nbsp;·&nbsp; acet surampalem &nbsp;·&nbsp; 2026</div>
+
+<script>
+// ── Aurora WebGL Background ────────────────────────────────────────────────
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+  if(!gl){ canvas.style.display='none'; return; }
+
+  const isWebGL2 = !!canvas.getContext('webgl2');
+
+  const VERT = isWebGL2 ? `#version 300 es
+in vec2 position;
+void main(){ gl_Position = vec4(position,0.0,1.0); }
+` : `
+attribute vec2 position;
+void main(){ gl_Position = vec4(position,0.0,1.0); }
+`;
+
+  const FRAG = isWebGL2 ? `#version 300 es
+precision highp float;
+uniform float uTime;
+uniform float uAmplitude;
+uniform vec3  uColorStops[3];
+uniform vec2  uResolution;
+uniform float uBlend;
+out vec4 fragColor;
+
+vec3 permute(vec3 x){ return mod(((x*34.0)+1.0)*x,289.0); }
+float snoise(vec2 v){
+  const vec4 C=vec4(0.211324865405187,0.366025403784439,-0.577350269189626,0.024390243902439);
+  vec2 i=floor(v+dot(v,C.yy));
+  vec2 x0=v-i+dot(i,C.xx);
+  vec2 i1=(x0.x>x0.y)?vec2(1,0):vec2(0,1);
+  vec4 x12=x0.xyxy+C.xxzz; x12.xy-=i1;
+  i=mod(i,289.0);
+  vec3 p=permute(permute(i.y+vec3(0,i1.y,1))+i.x+vec3(0,i1.x,1));
+  vec3 m=max(0.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.0);
+  m=m*m; m=m*m;
+  vec3 x=2.0*fract(p*C.www)-1.0;
+  vec3 h=abs(x)-0.5;
+  vec3 ox=floor(x+0.5);
+  vec3 a0=x-ox;
+  m*=1.79284291400159-0.85373472095314*(a0*a0+h*h);
+  vec3 g; g.x=a0.x*x0.x+h.x*x0.y; g.yz=a0.yz*x12.xz+h.yz*x12.yw;
+  return 130.0*dot(m,g);
+}
+
+void main(){
+  vec2 uv=gl_FragCoord.xy/uResolution;
+  // color ramp
+  vec3 rampColor;
+  if(uv.x<0.5){
+    float f=uv.x/0.5;
+    rampColor=mix(uColorStops[0],uColorStops[1],f);
+  } else {
+    float f=(uv.x-0.5)/0.5;
+    rampColor=mix(uColorStops[1],uColorStops[2],f);
+  }
+  float height=snoise(vec2(uv.x*2.0+uTime*0.1,uTime*0.25))*0.5*uAmplitude;
+  height=exp(height);
+  height=(uv.y*2.0-height+0.2);
+  float intensity=0.6*height;
+  float midPoint=0.20;
+  float auroraAlpha=smoothstep(midPoint-uBlend*0.5,midPoint+uBlend*0.5,intensity);
+  vec3 auroraColor=intensity*rampColor;
+  fragColor=vec4(auroraColor*auroraAlpha,auroraAlpha);
+}
+` : `
+precision highp float;
+uniform float uTime;
+uniform float uAmplitude;
+uniform vec3  uColorStops[3];
+uniform vec2  uResolution;
+uniform float uBlend;
+
+vec3 permute(vec3 x){ return mod(((x*34.0)+1.0)*x,289.0); }
+float snoise(vec2 v){
+  const vec4 C=vec4(0.211324865405187,0.366025403784439,-0.577350269189626,0.024390243902439);
+  vec2 i=floor(v+dot(v,C.yy));
+  vec2 x0=v-i+dot(i,C.xx);
+  vec2 i1=(x0.x>x0.y)?vec2(1.0,0.0):vec2(0.0,1.0);
+  vec4 x12=x0.xyxy+C.xxzz; x12.xy-=i1;
+  i=mod(i,289.0);
+  vec3 p=permute(permute(i.y+vec3(0.0,i1.y,1.0))+i.x+vec3(0.0,i1.x,1.0));
+  vec3 m=max(0.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.0);
+  m=m*m; m=m*m;
+  vec3 x=2.0*fract(p*C.www)-1.0;
+  vec3 h=abs(x)-0.5;
+  vec3 ox=floor(x+0.5);
+  vec3 a0=x-ox;
+  m*=1.79284291400159-0.85373472095314*(a0*a0+h*h);
+  vec3 g; g.x=a0.x*x0.x+h.x*x0.y; g.yz=a0.yz*x12.xz+h.yz*x12.yw;
+  return 130.0*dot(m,g);
+}
+
+void main(){
+  vec2 uv=gl_FragCoord.xy/uResolution;
+  vec3 rampColor;
+  if(uv.x<0.5){ float f=uv.x/0.5; rampColor=mix(uColorStops[0],uColorStops[1],f); }
+  else { float f=(uv.x-0.5)/0.5; rampColor=mix(uColorStops[1],uColorStops[2],f); }
+  float height=snoise(vec2(uv.x*2.0+uTime*0.1,uTime*0.25))*0.5*uAmplitude;
+  height=exp(height);
+  height=(uv.y*2.0-height+0.2);
+  float intensity=0.6*height;
+  float midPoint=0.20;
+  float auroraAlpha=smoothstep(midPoint-uBlend*0.5,midPoint+uBlend*0.5,intensity);
+  vec3 auroraColor=intensity*rampColor;
+  gl_FragColor=vec4(auroraColor*auroraAlpha,auroraAlpha);
+}
+`;
+
+  function compileShader(type, src){
+    const s=gl.createShader(type);
+    gl.shaderSource(s,src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog=gl.createProgram();
+  gl.attachShader(prog,compileShader(gl.VERTEX_SHADER,VERT));
+  gl.attachShader(prog,compileShader(gl.FRAGMENT_SHADER,FRAG));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+
+  // Full-screen triangle
+  const verts=new Float32Array([-1,-1, 3,-1, -1,3]);
+  const buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,verts,gl.STATIC_DRAW);
+  const posLoc=gl.getAttribLocation(prog,'position');
+  gl.enableVertexAttribArray(posLoc);
+  gl.vertexAttribPointer(posLoc,2,gl.FLOAT,false,0,0);
+
+  // Uniforms
+  const uTime      = gl.getUniformLocation(prog,'uTime');
+  const uAmplitude = gl.getUniformLocation(prog,'uAmplitude');
+  const uColorStops= gl.getUniformLocation(prog,'uColorStops');
+  const uResolution= gl.getUniformLocation(prog,'uResolution');
+  const uBlend     = gl.getUniformLocation(prog,'uBlend');
+
+  function hexToRGB(hex){
+    const r=parseInt(hex.slice(1,3),16)/255;
+    const g=parseInt(hex.slice(3,5),16)/255;
+    const b=parseInt(hex.slice(5,7),16)/255;
+    return [r,g,b];
+  }
+
+  const stops=['#b834ff','#B19EEF','#5227FF'].flatMap(h=>hexToRGB(h));
+  gl.uniform3fv(uColorStops, stops);
+  gl.uniform1f(uAmplitude, 1.0);
+  gl.uniform1f(uBlend, 0.5);
+
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+  gl.clearColor(0,0,0,0);
+
+  function resize(){
+    const w=window.innerWidth, h=window.innerHeight;
+    canvas.width=w; canvas.height=h;
+    gl.viewport(0,0,w,h);
+    gl.uniform2f(uResolution,w,h);
+  }
+  resize();
+  window.addEventListener('resize',resize,{passive:true});
+
+  let t=0;
+  (function loop(ts){
+    t = ts * 0.001 * 1.0 * 0.1; // speed=1
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniform1f(uTime,t);
+    gl.drawArrays(gl.TRIANGLES,0,3);
+  })(0);
+
+  // ── Interactive Floatable Effect ──────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    const floatables = document.querySelectorAll('.sidebar-card, .edu-card, .skill-group, .proj-item, .add-card');
+    
+    let rafPending = false;
+    let mouseX = 0, mouseY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (!rafPending) {
+        rafPending = true;
+        requestAnimationFrame(updateFloatables);
+      }
+    }, { passive: true });
+
+    function updateFloatables() {
+      floatables.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        // Check if mouse is near enough or strictly over 
+        // For a subtle "global" feel or just over the card:
+        const isHover = mouseX >= rect.left && mouseX <= rect.right && 
+                        mouseY >= rect.top && mouseY <= rect.bottom;
+        
+        if (isHover) {
+          const x = (mouseX - (rect.left + rect.width / 2)) / (rect.width / 2);
+          const y = (mouseY - (rect.top + rect.height / 2)) / (rect.height / 2);
+          
+          // Apply a subtle tilt based on mouse position relative to card center
+          el.style.transform = `translateY(-10px) rotateX(${y * -2}deg) rotateY(${x * 2}deg)`;
+        } else {
+          // If not hover, CSS handles the reset smoothly due to transitions
+          el.style.transform = '';
+        }
+      });
+      rafPending = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
