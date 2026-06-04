@@ -751,3 +751,47 @@ footer {
 }
 
      
+/* -- Custom Directory layout adjustments for two folders -- */
+#work .grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 480px));
+    justify-content: center;
+    gap: 2.5rem;
+}
+
+#folder-codes-hub, #folder-3d {
+    min-height: 380px;
+    padding: 3rem;
+    background: rgba(15, 15, 20, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+#folder-codes-hub:hover {
+    border-color: rgba(37, 99, 235, 0.4);
+    box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.25);
+}
+
+#folder-3d:hover {
+    border-color: rgba(219, 39, 119, 0.4);
+    box-shadow: 0 25px 50px -12px rgba(219, 39, 119, 0.25);
+}
+
+#folder-codes-hub .card-icon, #folder-3d .card-icon {
+    transform: scale(1.15);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#folder-codes-hub:hover .card-icon {
+    transform: scale(1.25) rotate(-5deg);
+}
+
+#folder-3d:hover .card-icon {
+    transform: scale(1.25) rotate(5deg);
+}
+
+/* -- Video Edits card icon style inside Get in Touch -- */
+#contact-video-edits .card-icon {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--color-light-blue);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+}
