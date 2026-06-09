@@ -45,7 +45,7 @@ body{font-family:var(--mono);color:var(--text);background:var(--bg);min-height:1
 .project-count{font-size:0.72rem;color:var(--muted);letter-spacing:1px}
 .project-count b{color:var(--text)}
 .grid{position:relative;z-index:10;max-width:1300px;margin:0 auto;padding:0 4% 6rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
-.grid-cell{background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:2.2rem 2rem;cursor:pointer;transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);position:relative;overflow:hidden;display:flex;flex-direction:column}
+.grid-cell{background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:2.2rem 2rem;cursor:pointer;transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;position:relative;overflow:hidden;display:flex;flex-direction:column;will-change:transform}
 .grid-cell:hover{background:rgba(255,255,255,0.06);transform:translateY(-10px);border-color:rgba(255,255,255,0.2);box-shadow:0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255,255,255,0.05)}
 .cell-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem}
 .cell-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--dim);border:1px solid var(--border);flex-shrink:0;transition:all 0.3s}
@@ -65,11 +65,11 @@ body{font-family:var(--mono);color:var(--text);background:var(--bg);min-height:1
 .cell-arrow{position:absolute;bottom:2rem;right:2rem;opacity:0;transition:all 0.3s;transform:translate(-8px,8px)}
 .grid-cell:hover .cell-arrow{opacity:1;transform:translate(0,0)}
 .cell-arrow svg{width:18px;height:18px;stroke:var(--cell-color,var(--orange));stroke-width:2.5;fill:none}
-.modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.92);backdrop-filter:blur(12px);overflow-y:auto}
-.modal.open{display:block}
+.modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;transition:opacity 0.25s ease;overflow-y:auto}
+.modal.open{opacity:1;background:rgba(0,0,0,0.85)}
 .modal-inner{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:3rem 1rem}
-.modal-panel{width:min(680px,100%);background:#0d0d10;border:1px solid rgba(255,255,255,0.1);border-radius:20px;animation:slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)}
-@keyframes slideUp{from{opacity:0;transform:translateY(40px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-panel{width:min(680px,100%);background:#0d0d10;border:1px solid rgba(255,255,255,0.1);border-radius:20px;opacity:0;transform:translateY(20px) scale(0.96);transition:opacity 0.22s cubic-bezier(0.25, 1, 0.5, 1), transform 0.22s cubic-bezier(0.25, 1, 0.5, 1);will-change:transform, opacity}
+.modal.open .modal-panel{opacity:1;transform:translateY(0) scale(1);transition:opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)}
 .modal-content{padding:3rem}
 .modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
 .modal-name{font-family:var(--logo);font-size:1.8rem;font-weight:700;color:#fff;letter-spacing:-1px;line-height:1}
@@ -175,7 +175,7 @@ footer{position:relative;z-index:10;text-align:center;padding:2.5rem 0;border-to
   const camera = new THREE.OrthographicCamera(-1,1,1,-1,0,1);
 
   const renderer = new THREE.WebGLRenderer({antialias:false,alpha:true,powerPreference:'high-performance',stencil:false,depth:false});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,1.25));
   renderer.setClearColor(0,0);
   renderer.domElement.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%';
   container.appendChild(renderer.domElement);
@@ -222,7 +222,7 @@ footer{position:relative;z-index:10;text-align:center;padding:2.5rem 0;border-to
       vec3 col = vec3(0.0);
       float t = 0.1;
 
-      for(int i = 0; i < 80; i++){
+      for(int i = 0; i < 40; i++){
         vec3 p = ro + rd * t;
         p.xz = vec2(uRotCos*p.x - uRotSin*p.z,
                     uRotSin*p.x + uRotCos*p.z);
@@ -230,7 +230,7 @@ footer{position:relative;z-index:10;text-align:center;padding:2.5rem 0;border-to
         q.y = p.y * uPillarHeight + uTime;
 
         float freq = 1.0, amp = 1.0;
-        for(int j = 0; j < 4; j++){
+        for(int j = 0; j < 2; j++){
           q.xz = vec2(uWaveCos*q.x - uWaveSin*q.z,
                       uWaveSin*q.x + uWaveCos*q.z);
           q += cos(q.zxy * freq - uTime * float(j) * 2.0) * amp;
@@ -367,6 +367,7 @@ async function fetchProjects(){
           projects.push({
             name: base,
             path: dir.name+'/'+f.name,
+            raw_size: f.size,
             size: fmtBytes(f.size),
             sha: f.sha,
             download_url: f.download_url,
@@ -380,6 +381,7 @@ async function fetchProjects(){
         projects.push({
           name: base,
           path: f.name,
+          raw_size: f.size,
           size: fmtBytes(f.size),
           sha: f.sha,
           download_url: f.download_url,
@@ -388,7 +390,7 @@ async function fetchProjects(){
       });
     }
 
-    // Fetch real details (latest commit message) and date per file
+    // Fetch real details (latest commit message) and date per file, resolving Git LFS pointers for size
     const detailsPromises = projects.map(async (p)=>{
       try{
         const r = await fetch(`https://api.github.com/repos/${GITHUB}/${REPO}/commits?path=${encodeURIComponent(p.path)}&per_page=1`);
@@ -399,6 +401,22 @@ async function fetchProjects(){
         }
       }catch(e){
         p.desc = `Blender asset: ${p.name.replace(/_/g,' ')}`;
+      }
+
+      // If the file size is very small, it's likely a Git LFS pointer
+      if (p.raw_size < 1000) {
+        try {
+          const lfsRes = await fetch(p.download_url);
+          const lfsText = await lfsRes.text();
+          if (lfsText.startsWith('version https://git-lfs.github.com/spec/v1')) {
+            const sizeMatch = lfsText.match(/size\s+(\d+)/);
+            if (sizeMatch && sizeMatch[1]) {
+              p.size = fmtBytes(parseInt(sizeMatch[1], 10));
+            }
+          }
+        } catch (err) {
+          console.warn("Failed to retrieve LFS size for", p.name, err);
+        }
       }
     });
     await Promise.all(detailsPromises);
@@ -456,16 +474,40 @@ function openModal(idx){
   document.getElementById('m-gh').href=p.html_url;
   document.getElementById('btn-prev').disabled=idx===0;
   document.getElementById('btn-next').disabled=idx===curList.length-1;
+
+  if (modal.onCloseTransitionEnd) {
+    modal.removeEventListener('transitionend', modal.onCloseTransitionEnd);
+    modal.onCloseTransitionEnd = null;
+  }
+
+  modal.style.display = 'block';
+  modal.offsetHeight; // Force reflow
   modal.classList.add('open');
   document.body.style.overflow='hidden';
+  
   document.querySelectorAll('.grid-cell').forEach(el=>el.classList.remove('active-cell'));
   document.querySelectorAll('.grid-cell')[idx]?.classList.add('active-cell');
 }
+
 function closeModal(){
   modal.classList.remove('open');
   document.body.style.overflow='';curIdx=-1;
   document.querySelectorAll('.grid-cell').forEach(el=>el.classList.remove('active-cell'));
+
+  if (modal.onCloseTransitionEnd) {
+    modal.removeEventListener('transitionend', modal.onCloseTransitionEnd);
+  }
+
+  modal.onCloseTransitionEnd = (e) => {
+    if (e.target === modal && e.propertyName === 'opacity' && !modal.classList.contains('open')) {
+      modal.style.display = 'none';
+      modal.removeEventListener('transitionend', modal.onCloseTransitionEnd);
+      modal.onCloseTransitionEnd = null;
+    }
+  };
+  modal.addEventListener('transitionend', modal.onCloseTransitionEnd);
 }
+
 document.getElementById('m-close').addEventListener('click',closeModal);
 modal.addEventListener('click',e=>{if(e.target===modal||e.target.classList.contains('modal-inner'))closeModal();});
 document.addEventListener('keydown',e=>{

@@ -1,421 +1,697 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio - Aditya Vishwakarma - Dev | Creator | Dreamer</title>
-    <meta name="description" content="A creative digital portfolio showcasing Java code, video edits, and 3D assets.">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio - Aditya Vishwakarma</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0a12;
+    --ac: #88aaff;
+    --ac2: #ff5c7a;
+    --ac3: #00ffd1;
+    --text-primary: #e8eaf6;
+    --text-secondary: #9fa8c7;
+    --glass-bg: rgba(255,255,255,0.07);
+    --glass-border: rgba(255,255,255,0.13);
+    --card-hover: rgba(136,170,255,0.08);
+    --radius: 16px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  #colorbends-container {
+    position: fixed; top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: -1; pointer-events: none;
+    mix-blend-mode: screen; opacity: 0.7;
+  }
+
+  /* HEADER */
+  .header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,18,0.88);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1.4rem 2.5rem 1rem;
+    display: flex; flex-direction: column; gap: 0.6rem;
+  }
+  .header-top {
+    display: flex; align-items: flex-end;
+    justify-content: space-between; flex-wrap: wrap; gap: 0.8rem;
+  }
+  .logo {
+    font-size: 1.7rem; font-weight: 800;
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+    line-height: 1.1;
+  }
+  .logo span { color: var(--ac); }
+  .header-sub {
+    font-size: 0.72rem; font-weight: 400;
+    color: var(--text-secondary); letter-spacing: 0.18em;
+    text-transform: uppercase; margin-top: 0.2rem;
+  }
+  .thin-bar {
+    border: none; height: 1px;
+    background: linear-gradient(90deg, var(--ac), transparent);
+    opacity: 0.35; margin-top: 0.2rem;
+  }
+  .nav { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+  .nav a {
+    color: var(--text-secondary); text-decoration: none;
+    font-size: 0.82rem; font-weight: 500;
+    transition: color 0.2s;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .nav a:hover { color: var(--ac); }
+
+  /* HERO */
+  .hero {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0;
+    padding: 4.5rem 2.5rem 4rem;
+    max-width: 1100px; margin: 0 auto;
+    position: relative;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; left: 0; bottom: 0;
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--ac), transparent);
+    opacity: 0.2;
+  }
+  .hero-img {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 0.85rem;
+    padding-right: 3rem;
+    border-right: 1px solid rgba(136,170,255,0.15);
+  }
+  .hero-img img,
+  .hero-img .placeholder-avatar {
+    width: 130px; height: 130px; border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid rgba(255, 255, 255, 0.85);
+    outline: 4px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+  }
+  .hero-img .placeholder-avatar {
+    background: #0f0f1e;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.8rem; color: var(--ac);
+  }
+  .hero-tag {
+    font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ac3);
+    border: 1px solid rgba(0,255,209,0.25);
+    border-radius: 50px; padding: 0.25rem 0.85rem;
+    white-space: nowrap;
+  }
+  .hero-content {
+    padding-left: 3rem;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .hero-eyebrow {
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-secondary); margin-bottom: 0.6rem;
+  }
+  .hero-content h2 {
+    font-size: clamp(2.6rem, 6vw, 4.2rem);
+    font-weight: 800; line-height: 1.05;
+    margin-bottom: 1.1rem; letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+  .hero-divider {
+    width: 40px; height: 2px;
+    background: var(--ac); border-radius: 2px;
+    margin-bottom: 1.1rem; opacity: 0.6;
+  }
+  .hero-content p {
+    color: var(--text-secondary); font-size: 0.95rem;
+    line-height: 1.8; max-width: 480px; font-weight: 300;
+  }
+
+  /* SECTIONS */
+  .folders-section { padding: 3rem 2.5rem; max-width: 1100px; margin: 0 auto; }
+  .section-title {
+    font-size: 1.4rem; font-weight: 700;
+    color: var(--text-primary); margin-bottom: 2rem;
+    position: relative; display: inline-block;
+  }
+  .section-title::after {
+    content: ''; position: absolute;
+    bottom: -6px; left: 0;
+    width: 40px; height: 2px;
+    background: var(--ac); border-radius: 2px;
+  }
+
+  /* ABOUT */
+  .about-section { padding: 1rem 2.5rem 3rem; }
+  .glass-effect {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(10px);
+  }
+  .about-content {
+    text-align: center; max-width: 860px;
+    margin: 0 auto; padding: 2.5rem;
+  }
+  .about-content p {
+    font-size: 1.05rem; line-height: 2;
+    color: #ffffff; font-weight: 300; letter-spacing: 0.3px;
+  }
+
+  /* GRID */
+  .grid {
+    display: flex; flex-direction: row;
+    justify-content: center; flex-wrap: wrap;
+    gap: 1.4rem; padding-bottom: 0.5rem;
+  }
+  .grid .card { flex: 0 0 210px; min-width: 210px; max-width: 230px; padding: 2rem 1.6rem 1.6rem; }
+  .grid .card-icon { width: 56px; height: 56px; border-radius: 14px; margin-bottom: 1.3rem; }
+  .grid .card-icon svg { width: 28px; height: 28px; }
+  .grid .card-content h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+  .grid .card-content p  { font-size: 0.88rem; line-height: 1.6; }
+  .grid .card-footer { padding-top: 1.4rem; font-size: 0.82rem; }
+  .grid .arrow { font-size: 1.1rem; }
+
+  /* FILE LIST */
+  .file-list { display: flex; flex-direction: column; gap: 0.3rem; }
+  .file-list .card { flex-direction: row; align-items: center; padding: 0.55rem 1rem; border-radius: 8px; gap: 0.85rem; }
+  .file-list .card-icon { width: 28px; height: 28px; border-radius: 6px; margin-bottom: 0; flex-shrink: 0; }
+  .file-list .card-icon svg { width: 14px; height: 14px; }
+  .file-list .card-content { display: flex; align-items: center; gap: 1.2rem; flex: 1; min-width: 0; }
+  .file-list .card-content h4 { font-size: 0.85rem; font-weight: 500; white-space: nowrap; margin-bottom: 0; min-width: 90px; }
+  .file-list .card-content p  { font-size: 0.78rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
+  .file-list .card-footer { padding-top: 0; margin-top: 0; gap: 0.6rem; flex-shrink: 0; font-size: 0.72rem; }
+  .file-list .card-footer .arrow { font-size: 0.85rem; }
+
+  /* CARDS */
+  .card {
+    display: flex; flex-direction: column;
+    text-decoration: none; color: inherit;
+    border-radius: var(--radius); padding: 1.5rem;
+    transition: transform 0.25s, border-color 0.25s, background 0.25s, box-shadow 0.25s;
+    cursor: pointer;
+  }
+  .card:hover { transform: translateY(-4px); background: var(--card-hover); border-color: rgba(136,170,255,0.25); box-shadow: 0 8px 30px rgba(136,170,255,0.12); }
+  .card-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.1rem; }
+  .card-icon svg { width: 22px; height: 22px; }
+  .skills-icon      { background: rgba(136,170,255,0.12); color: var(--ac); }
+  .repositories-icon{ background: rgba(0,255,209,0.1);   color: var(--ac3); }
+  .resume-icon      { background: rgba(136,170,255,0.12); color: var(--ac); }
+  .video-icon       { background: rgba(255,92,122,0.12);  color: var(--ac2); }
+  .d3-icon          { background: rgba(0,255,209,0.1);    color: var(--ac3); }
+  .code-icon        { background: rgba(255,92,122,0.12);  color: var(--ac2); }
+  .card-content h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+  .card-content p  { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.55; }
+  .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 1.2rem; font-size: 0.78rem; color: var(--text-secondary); font-family: monospace; letter-spacing: 0.03em; }
+  .arrow { font-size: 1rem; color: var(--ac); transition: transform 0.2s; }
+  .card:hover .arrow { transform: translateX(4px); }
+
+  /* FOOTER */
+  footer { text-align: center; padding: 2.5rem; color: var(--text-secondary); font-size: 0.82rem; border-top: 1px solid var(--glass-border); margin-top: 2rem; }
+
+  /* ── SKILLS MODAL ── */
+  /* ── SKILLS MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 999; align-items: center; justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .modal-overlay.active {
+    opacity: 1;
+    background: rgba(0,0,0,0.65);
+  }
+  .modal-box {
+    position: relative; max-width: 560px; width: 100%;
+    background: rgba(14,14,26,0.96);
+    border: 1px solid rgba(136,170,255,0.18);
+    border-radius: 24px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(136,170,255,0.08);
+    
+    /* Animation start / close state */
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+    transition: opacity 0.22s cubic-bezier(0.25, 1, 0.5, 1), transform 0.22s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform, opacity;
+  }
+  .modal-overlay.active .modal-box {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition: opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Modal top accent bar */
+  .modal-accent {
+    height: 3px;
+    background: linear-gradient(90deg, var(--ac), var(--ac2), var(--ac3));
+  }
+
+  /* Modal header */
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.6rem 1.8rem 1.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .modal-header-left { display: flex; align-items: center; gap: 1rem; }
+  .modal-icon {
+    width: 46px; height: 46px; border-radius: 12px;
+    background: rgba(136,170,255,0.12);
+    border: 1px solid rgba(136,170,255,0.2);
+    color: var(--ac);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-icon svg { width: 22px; height: 22px; }
+  .modal-title { font-size: 1.15rem; font-weight: 700; color: var(--text-primary); }
+  .modal-subtitle { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.1rem; letter-spacing: 0.05em; }
+  .modal-close {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text-secondary); font-size: 1rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+  .modal-close:hover { background: rgba(255,92,122,0.15); color: var(--ac2); border-color: rgba(255,92,122,0.3); }
+
+  /* Modal body */
+  .modal-body { padding: 1.6rem 1.8rem 1.8rem; display: flex; flex-direction: column; gap: 1.4rem; }
+  .skills-cat h4 {
+    font-size: 0.68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--text-secondary); margin-bottom: 0.7rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .skills-cat h4::after {
+    content: ''; flex: 1; height: 1px;
+    background: rgba(255,255,255,0.06);
+  }
+  .skills-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .skill-tag {
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 8px; font-size: 0.82rem; font-weight: 500;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+  .skill-tag:hover { transform: translateY(-2px); }
+  .skill-tag.lang    { background: rgba(136,170,255,0.1);  border: 1px solid rgba(136,170,255,0.22); color: var(--ac); }
+  .skill-tag.lang:hover { background: rgba(136,170,255,0.18); }
+  .skill-tag.fw      { background: rgba(0,255,209,0.08);   border: 1px solid rgba(0,255,209,0.2);   color: var(--ac3); }
+  .skill-tag.fw:hover   { background: rgba(0,255,209,0.15); }
+  .skill-tag.db      { background: rgba(255,92,122,0.08);  border: 1px solid rgba(255,92,122,0.2);  color: var(--ac2); }
+  .skill-tag.db:hover   { background: rgba(255,92,122,0.15); }
+  .skill-tag.creative{ background: rgba(180,130,255,0.08); border: 1px solid rgba(180,130,255,0.2); color: #c4a0ff; }
+  .skill-tag.creative:hover { background: rgba(180,130,255,0.15); }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    .header { padding: 1rem 1.2rem 0.8rem; }
+    .logo { font-size: 1.25rem; }
+    .header-sub { font-size: 0.65rem; letter-spacing: 0.1em; }
+    .nav { gap: 1rem; }
+    .nav a { font-size: 0.75rem; }
+    .hero { grid-template-columns: 1fr; text-align: center; padding: 3rem 1.2rem 2.5rem; gap: 2rem; }
+    .hero::after { display: none; }
+    .hero-img { border-right: none; padding-right: 0; border-bottom: 1px solid rgba(136,170,255,0.15); padding-bottom: 2rem; }
+    .hero-img img, .hero-img .placeholder-avatar { width: 110px; height: 110px; font-size: 2.4rem; }
+    .hero-content { padding-left: 0; align-items: center; }
+    .hero-divider { margin: 0 auto 1.1rem; }
+    .hero-content p { max-width: 100%; font-size: 0.9rem; }
+    .folders-section { padding: 2rem 1.2rem; }
+    .about-section   { padding: 0.5rem 1.2rem 2rem; }
+    .about-content   { padding: 1.5rem 1.2rem; }
+    .about-content p { font-size: 0.92rem; line-height: 1.85; }
+    .grid { grid-template-columns: 1fr; gap: 1rem; }
+    .file-list .card-content { gap: 0.6rem; }
+    .file-list .card-content h4 { min-width: 70px; font-size: 0.8rem; }
+    .modal-box { border-radius: 18px; }
+    .modal-header, .modal-body { padding-left: 1.2rem; padding-right: 1.2rem; }
+    footer { padding: 1.8rem 1.2rem; font-size: 0.78rem; }
+  }
+  @media (max-width: 400px) {
+    .logo { font-size: 1.05rem; }
+    .nav a { font-size: 0.7rem; letter-spacing: 0.04em; }
+    .hero-content h2 { font-size: 1.6rem; }
+  }
+</style>
 </head>
-
 <body>
-    <!-- Render Container for Three.js ColorBends Element -->
-    <div id="colorbends-container" class="color-bends-container"
-        style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; mix-blend-mode: screen; opacity: 0.8; will-change: transform;">
+
+<div id="colorbends-container"></div>
+
+<header class="header">
+  <div class="header-top">
+    <div>
+      <h1 class="logo">Code<span>.</span>Create<span>.</span>Dream</h1>
+      <div class="header-sub">Aditya Vishwakarma &mdash; Portfolio</div>
     </div>
+    <nav class="nav">
+      <a href="#work">My Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+  <hr class="thin-bar">
+</header>
 
-    <header class="header">
-        <h1 class="logo">Dev | Creator | Dreamer</h1>
-<hr class="thin-bar" style="border:none;height:2px;background:var(--ac,#88aaff);margin:0;"/>
-        <nav class="nav">
-            <a href="#work">My Work</a>
-            <a href="Coders Hub/resume.html">About</a>
-            <a href="#contact">Contact</a>
-        </nav>
-    </header>
+<main>
+  <section class="hero">
+    <div class="hero-img">
+      <!--
+        ╔══════════════════════════════════════════════════════╗
+        ║           PROFILE IMAGE — SET YOUR PHOTO HERE       ║
+        ║                                                      ║
+        ║  To use your own photo, replace the placeholder div  ║
+        ║  below with an <img> tag, like this:                 ║
+        ║                                                      ║
+        ║  <img src="YOUR_IMAGE_FILENAME.jpg"                  ║
+        ║       alt="Aditya Vishwakarma">                      ║
+        ║                                                      ║
+        ║  Example: src="IMG_20251111_002217.jpg"              ║
+        ╚══════════════════════════════════════════════════════╝
+      -->
+      <img src="IMG_20251111_002217.jpg" alt="Aditya Vishwakarma">
+      <span class="hero-tag">Open to work</span>
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Developer &amp; Creative</div>
+      <h2>Aditya Vishwakarma</h2>
+      <div class="hero-divider"></div>
+      <p>Welcome to my digital workspace. Explore my coding projects, video edits, and custom 3D creations all in one place.</p>
+    </div>
+  </section>
 
-    <main>
-        <section class="hero">
-            <div class="hero-img">
-                <img src="IMG_20251111_002217.jpg" alt="Aditya Vishwakarma">
-            </div>
-            <div class="hero-content">
-                <h2><span class="shiny-text">Aditya Vishwakarma</span></h2>
-                <p>Welcome to my digital workspace. Explore my coding projects, video edits, and custom 3D creations all in one place.</p>
-                <a href="#work" class="btn">Explore My Work</a>
-            </div>
-        </section>
+  <section id="about" class="about-section folders-section" style="padding-top:1rem;">
+    <h3 class="section-title" style="display:block;margin:0 auto 2rem auto;text-align:center;width:fit-content;">About Me</h3>
+    <div class="about-content glass-effect">
+      <p>I'm Aditya Vishwakarma, a developer and creative enthusiast who enjoys building things for the digital world. I like solving problems through code, designing clean interfaces, and exploring creative tools like video editing and 3D design. I'm always learning, experimenting, and working to turn ideas into meaningful projects.</p>
+    </div>
+  </section>
 
-        <section class="about-section folders-section" style="padding-top: 2rem;">
+  <section id="work" class="folders-section">
+    <h3 class="section-title">My Directories</h3>
+    <div class="grid">
 
+      <a href="javascript:void(0)" class="card glass-effect" id="folder-skills">
+        <div class="card-icon skills-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18"/><path d="M7 16V12"/><path d="M11 16V8"/><path d="M15 16V10"/>
+          </svg>
+        </div>
+        <div class="card-content"><h4>Skills</h4><p>Technical proficiency, core languages, software tools, and practice platforms.</p></div>
+        <div class="card-footer"><span>/skills</span><span class="arrow">→</span></div>
+      </a>
 
-            <h3 class="section-title"
-                style="text-align: center; display: block; margin: 0 auto 3rem auto; width: fit-content;">About Me</h3>
-            <div class="about-content glass-effect"
-                style="text-align: center; max-width: 900px; margin: 0 auto; padding: 3rem;">
-                <p
-                    style="font-size: 1.2rem; line-height: 2; margin: 0 auto; color: var(--text-primary); font-weight: 300; letter-spacing: 0.5px;">
-                    I'm Aditya Vishwakarma, a developer and creative enthusiast who enjoys building things for the
-                    digital world. I like solving problems through code, designing clean interfaces, and exploring
-                    creative tools like video editing and 3D design. I'm always learning, experimenting, and working
-                    to turn ideas into meaningful projects.
-                </p>
-            </div>
-        </section>
+      <a href="https://github.com/Aditya-Vishwakarma722?tab=repositories" target="_blank" class="card glass-effect">
+        <div class="card-icon repositories-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/>
+            <path d="m10 11-2 2 2 2"/><path d="m14 11 2 2-2 2"/>
+          </svg>
+        </div>
+        <div class="card-content"><h4>Repositories</h4><p>Active development, web applications, open source repos, and completed coding projects.</p></div>
+        <div class="card-footer"><span>/repositories</span><span class="arrow">→</span></div>
+      </a>
 
-        <section id="work" class="folders-section">
-            <h3 class="section-title">My Directories</h3>
-            <div class="grid">
-                <!-- Coders Hub Folder -->
-                <a href="Coders Hub/initial.html" class="card glass-effect" id="folder-codes-hub">
-                    <div class="card-icon code-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4" />
-                            <polyline points="14 2 14 8 20 8" />
-                            <path d="m3 15 2 2 4-4" />
-                        </svg>
-                    </div>
-                    <div class="card-content">
-                        <h4>Coders Hub</h4>
-                        <p>A comprehensive collection of my practice codes, algorithms, and technical problem-solving.
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <span>/Coders Hub</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </a>
+      <a href="resume.html" class="card glass-effect">
+        <div class="card-icon resume-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="card-content"><h4>Resume</h4><p>Academic profile, career goals, formal education, and professional experience highlights.</p></div>
+        <div class="card-footer"><span>/resume</span><span class="arrow">→</span></div>
+      </a>
 
+      <a href="Blender 3D/blenderAssets.html" class="card glass-effect">
+        <div class="card-icon d3-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+        </div>
+        <div class="card-content"><h4>Blender 3D</h4><p>3D models, assets, environments, and aesthetic renders fully crafted in Blender.</p></div>
+        <div class="card-footer"><span>/3d_assets</span><span class="arrow">→</span></div>
+      </a>
 
+    </div>
+  </section>
 
-                <!-- 3D Assets Folder -->
-                <a href="Blender 3D/blenderAssets.html" class="card glass-effect" id="folder-3d">
-                    <div class="card-icon d3-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path
-                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                            <line x1="12" y1="22.08" x2="12" y2="12" />
-                        </svg>
-                    </div>
-                    <div class="card-content">
-                        <h4>Blender 3D</h4>
-                        <p>3D models, assets, environments, and aesthetic renders fully crafted in Blender.</p>
-                    </div>
-                    <div class="card-footer">
-                        <span>/3d_assets</span>
-                        <span class="arrow">→</span>
-                    </div>
-                </a>
-            </div>
-            <section id="contact" class="folders-section">
-                <h3 class="section-title">Get In Touch</h3>
-                <div class="grid">
-                    <!-- Gmail Card -->
-                    <a href="mailto:adityavishwa616@gmail.com" class="card glass-effect" id="contact-gmail">
-                        <div class="card-icon code-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                                <polyline points="22,6 12,13 2,6" />
-                            </svg>
-                        </div>
-                        <div class="card-content">
-                            <h4>Gmail</h4>
-                            <p>adityavishwa616@gmail.com</p>
-                        </div>
-                        <div class="card-footer">
-                            <span>Send Email</span>
-                            <span class="arrow">→</span>
-                        </div>
-                    </a>
+  <section id="contact" class="folders-section">
+    <h3 class="section-title">Get In Touch</h3>
+    <div class="file-list">
 
-                    <!-- Instagram Card -->
-                    <a href="https://www.instagram.com/psy.ko_070/" target="_blank" class="card glass-effect"
-                        id="contact-instagram">
-                        <div class="card-icon d3-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                            </svg>
-                        </div>
-                        <div class="card-content">
-                            <h4>Instagram</h4>
-                            <p>@psy.ko_070</p>
-                        </div>
-                        <div class="card-footer">
-                            <span>Follow Me</span>
-                            <span class="arrow">→</span>
-                        </div>
-                    </a>
+      <a href="mailto:adityavishwa616@gmail.com" class="card glass-effect">
+        <div class="card-icon code-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <div class="card-content"><h4>Gmail</h4><p>adityavishwa616@gmail.com</p></div>
+        <div class="card-footer"><span>Talk with me</span><span class="arrow">→</span></div>
+      </a>
 
-                    <!-- LinkedIn Card -->
-                    <a href="https://www.linkedin.com/in/aditya-vishwakarma-b700b2331/" target="_blank"
-                        class="card glass-effect" id="contact-linkedin">
-                        <div class="card-icon video-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path
-                                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                                <rect x="2" y="9" width="4" height="12" />
-                                <circle cx="4" cy="4" r="2" />
-                            </svg>
-                        </div>
-                        <div class="card-content">
-                            <h4>LinkedIn</h4>
-                            <p>Aditya Vishwakarma</p>
-                        </div>
-                        <div class="card-footer">
-                            <span>Connect</span>
-                            <span class="arrow">→</span>
-                        </div>
-                    </a>
+      <a href="https://www.instagram.com/psy.ko_070/" target="_blank" class="card glass-effect">
+        <div class="card-icon d3-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+        </div>
+        <div class="card-content"><h4>Instagram</h4><p>@psy.ko_070</p></div>
+        <div class="card-footer"><span>Follow Me</span><span class="arrow">→</span></div>
+      </a>
 
-                    <!-- Video Edits Card -->
-                    <a href="Video Edits/video_edits.html" class="card glass-effect" id="contact-video-edits">
-                        <div class="card-icon video-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="23 7 16 12 23 17 23 7" />
-                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-                            </svg>
-                        </div>
-                        <div class="card-content">
-                            <h4>Video Edits</h4>
-                            <p>VFX & Cinematics</p>
-                        </div>
-                        <div class="card-footer">
-                            <span>Watch Edits</span>
-                            <span class="arrow">→</span>
-                        </div>
-                    </a>
-                </div>
-            </section>
-    </main>
+      <a href="Video Edits/video_edits.html" class="card glass-effect">
+        <div class="card-icon video-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="23 7 16 12 23 17 23 7"/>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+          </svg>
+        </div>
+        <div class="card-content"><h4>Video Edits</h4><p>High-quality MP4 video edits, visual effects, and dynamic cinematic projects.</p></div>
+        <div class="card-footer"><span>Look into my work</span><span class="arrow">→</span></div>
+      </a>
 
-    <footer>
-        <p>&copy; 2026 Crafted by Psyko with creativity.</p>
-    </footer>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // ==========================================
-            // ColorBends Backgroud Simulation
-            // ==========================================
-            (function initColorBends() {
-                const cbContainer = document.getElementById('colorbends-container');
-                if (!cbContainer || !window.THREE) return;
+      <a href="https://www.linkedin.com/in/aditya-vishwakarma-b700b2331/" target="_blank" class="card glass-effect">
+        <div class="card-icon video-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+            <rect x="2" y="9" width="4" height="12"/>
+            <circle cx="4" cy="4" r="2"/>
+          </svg>
+        </div>
+        <div class="card-content"><h4>LinkedIn</h4><p>Aditya Vishwakarma</p></div>
+        <div class="card-footer"><span>Connect With me</span><span class="arrow">→</span></div>
+      </a>
 
-                const MAX_COLORS = 8;
-                const frag = `
-                    #define MAX_COLORS ${MAX_COLORS}
-                    uniform vec2 uCanvas;
-                    uniform float uTime;
-                    uniform float uSpeed;
-                    uniform vec2 uRot;
-                    uniform int uColorCount;
-                    uniform vec3 uColors[MAX_COLORS];
-                    uniform int uTransparent;
-                    uniform float uScale;
-                    uniform float uFrequency;
-                    uniform float uWarpStrength;
-                    uniform vec2 uPointer; // in NDC [-1,1]
-                    uniform float uMouseInfluence;
-                    uniform float uParallax;
-                    uniform float uNoise;
-                    varying vec2 vUv;
+    </div>
+  </section>
+</main>
 
-                    void main() {
-                        float t = uTime * uSpeed;
-                        vec2 p = vUv * 2.0 - 1.0;
-                        p += uPointer * uParallax * 0.1;
-                        vec2 rp = vec2(p.x * uRot.x - p.y * uRot.y, p.x * uRot.y + p.y * uRot.x);
-                        vec2 q = vec2(rp.x * (uCanvas.x / uCanvas.y), rp.y);
-                        q /= max(uScale, 0.0001);
-                        q /= 0.5 + 0.2 * dot(q, q);
-                        q += 0.2 * cos(t) - 7.56;
-                        vec2 toward = (uPointer - rp);
-                        q += toward * uMouseInfluence * 0.2;
+<footer>
+  <p>&copy; 2026 Crafted by Psyko with creativity.</p>
+</footer>
 
-                        vec3 col = vec3(0.0);
-                        float a = 1.0;
+<!-- SKILLS MODAL -->
+<div id="skills-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-box">
+    <div class="modal-accent"></div>
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18"/><path d="M7 16V12"/><path d="M11 16V8"/><path d="M15 16V10"/>
+          </svg>
+        </div>
+        <div>
+          <div class="modal-title">Technical Skills</div>
+          <div class="modal-subtitle">Languages · Frameworks · Tools</div>
+        </div>
+      </div>
+      <button class="modal-close" id="close-skills-btn" aria-label="Close modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="skills-cat">
+        <h4>Languages</h4>
+        <div class="skills-tags">
+          <span class="skill-tag lang">Java</span>
+          <span class="skill-tag lang">C</span>
+          <span class="skill-tag lang">C++</span>
+          <span class="skill-tag lang">Python</span>
+        </div>
+      </div>
+      <div class="skills-cat">
+        <h4>Frameworks &amp; Core</h4>
+        <div class="skills-tags">
+          <span class="skill-tag fw">Spring Boot</span>
+          <span class="skill-tag fw">OOPs</span>
+          <span class="skill-tag fw">DBMS</span>
+        </div>
+      </div>
+      <div class="skills-cat">
+        <h4>Databases</h4>
+        <div class="skills-tags">
+          <span class="skill-tag db">MySQL</span>
+          <span class="skill-tag db">MongoDB</span>
+        </div>
+      </div>
+      <div class="skills-cat">
+        <h4>Creative</h4>
+        <div class="skills-tags">
+          <span class="skill-tag creative">Blender 3D</span>
+          <span class="skill-tag creative">After Effects</span>
+          <span class="skill-tag creative">Unreal Engine</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-                        if (uColorCount > 0) {
-                            vec2 s = q;
-                            vec3 sumCol = vec3(0.0);
-                            float cover = 0.0;
-                            for (int i = 0; i < MAX_COLORS; ++i) { 
-                                if (i >= uColorCount) break;
-                                s -= 0.01;
-                                vec2 r = sin(1.5 * (s.yx * uFrequency) + 2.0 * cos(s * uFrequency));
-                                float m0 = length(r + sin(5.0 * r.y * uFrequency - 3.0 * t + float(i)) / 4.0);
-                                float kBelow = clamp(uWarpStrength, 0.0, 1.0);
-                                float kMix = pow(kBelow, 0.3); // strong response across 0..1
-                                float gain = 1.0 + max(uWarpStrength - 1.0, 0.0); // allow >1 to amplify displacement
-                                vec2 disp = (r - s) * kBelow;
-                                vec2 warped = s + disp * gain;
-                                float m1 = length(warped + sin(5.0 * warped.y * uFrequency - 3.0 * t + float(i)) / 4.0);
-                                float m = mix(m0, m1, kMix);
-                                float w = 1.0 - exp(-6.0 / exp(6.0 * m));
-                                sumCol += uColors[i] * w;
-                                cover = max(cover, w);
-                            }
-                            col = clamp(sumCol, 0.0, 1.0);
-                            a = uTransparent > 0 ? cover : 1.0;
-                        } else {
-                            vec2 s = q;
-                            for (int k = 0; k < 3; ++k) {
-                                s -= 0.01;
-                                vec2 r = sin(1.5 * (s.yx * uFrequency) + 2.0 * cos(s * uFrequency));
-                                float m0 = length(r + sin(5.0 * r.y * uFrequency - 3.0 * t + float(k)) / 4.0);
-                                float kBelow = clamp(uWarpStrength, 0.0, 1.0);
-                                float kMix = pow(kBelow, 0.3);
-                                float gain = 1.0 + max(uWarpStrength - 1.0, 0.0);
-                                vec2 disp = (r - s) * kBelow;
-                                vec2 warped = s + disp * gain;
-                                float m1 = length(warped + sin(5.0 * warped.y * uFrequency - 3.0 * t + float(k)) / 4.0);
-                                float m = mix(m0, m1, kMix);
-                                col[k] = 1.0 - exp(-6.0 / exp(6.0 * m));
-                            }
-                            a = uTransparent > 0 ? max(max(col.r, col.g), col.b) : 1.0;
-                        }
+<script>
+document.addEventListener('DOMContentLoaded', () => {
 
-                        if (uNoise > 0.0001) {
-                            float n = fract(sin(dot(gl_FragCoord.xy + vec2(uTime), vec2(12.9898, 78.233))) * 43758.5453123);
-                            col += (n - 0.5) * uNoise;
-                            col = clamp(col, 0.0, 1.0);
-                        }
+  (function initColorBends() {
+    const cbContainer = document.getElementById('colorbends-container');
+    if (!cbContainer || !window.THREE) return;
+    const MAX_COLORS = 8;
+    const frag = `
+      #define MAX_COLORS ${MAX_COLORS}
+      uniform vec2 uCanvas; uniform float uTime; uniform float uSpeed;
+      uniform vec2 uRot; uniform int uColorCount; uniform vec3 uColors[MAX_COLORS];
+      uniform int uTransparent; uniform float uScale; uniform float uFrequency;
+      uniform float uWarpStrength; uniform vec2 uPointer; uniform float uMouseInfluence;
+      uniform float uParallax; uniform float uNoise;
+      varying vec2 vUv;
+      void main() {
+        float t = uTime * uSpeed;
+        vec2 p = vUv * 2.0 - 1.0;
+        p += uPointer * uParallax * 0.1;
+        vec2 rp = vec2(p.x*uRot.x - p.y*uRot.y, p.x*uRot.y + p.y*uRot.x);
+        vec2 q = vec2(rp.x*(uCanvas.x/uCanvas.y), rp.y);
+        q /= max(uScale,0.0001); q /= 0.5+0.2*dot(q,q);
+        q += 0.2*cos(t)-7.56;
+        vec2 toward = (uPointer - rp);
+        q += toward * uMouseInfluence * 0.2;
+        vec3 col = vec3(0.0); float a = 1.0;
+        vec2 s = q; vec3 sumCol = vec3(0.0); float cover = 0.0;
+        for (int i = 0; i < MAX_COLORS; ++i) {
+          if (i >= uColorCount) break;
+          s -= 0.01;
+          vec2 r = sin(1.5*(s.yx*uFrequency)+2.0*cos(s*uFrequency));
+          float m0 = length(r+sin(5.0*r.y*uFrequency-3.0*t+float(i))/4.0);
+          float kBelow = clamp(uWarpStrength,0.0,1.0);
+          float kMix = pow(kBelow,0.3);
+          float gain = 1.0+max(uWarpStrength-1.0,0.0);
+          vec2 disp = (r-s)*kBelow;
+          vec2 warped = s+disp*gain;
+          float m1 = length(warped+sin(5.0*warped.y*uFrequency-3.0*t+float(i))/4.0);
+          float m = mix(m0,m1,kMix);
+          float w = 1.0-exp(-6.0/exp(6.0*m));
+          sumCol += uColors[i]*w; cover = max(cover,w);
+        }
+        col = clamp(sumCol,0.0,1.0);
+        a = uTransparent > 0 ? cover : 1.0;
+        if (uNoise > 0.0001) {
+          float n = fract(sin(dot(gl_FragCoord.xy+vec2(uTime),vec2(12.9898,78.233)))*43758.5453123);
+          col += (n-0.5)*uNoise; col = clamp(col,0.0,1.0);
+        }
+        vec3 rgb = (uTransparent>0) ? col*a : col;
+        gl_FragColor = vec4(rgb,a);
+      }`;
+    const vert = `varying vec2 vUv; void main() { vUv=uv; gl_Position=vec4(position,1.0); }`;
+    const params = { rotation:0,speed:0.2,colors:["#ff5c7a","#8a5cff","#00ffd1"],transparent:true,autoRotate:0,scale:1,frequency:1,warpStrength:1,mouseInfluence:1,parallax:0.5,noise:0.1 };
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+    const geometry = new THREE.PlaneGeometry(2,2);
+    const uColorsArray = Array.from({length:MAX_COLORS},()=>new THREE.Vector3(0,0,0));
+    const toVec3 = hex => { const h=hex.replace('#','').trim(); const v=h.length===3?[parseInt(h[0]+h[0],16),parseInt(h[1]+h[1],16),parseInt(h[2]+h[2],16)]:[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; return new THREE.Vector3(v[0]/255,v[1]/255,v[2]/255); };
+    const parsedColors = params.colors.filter(Boolean).slice(0,MAX_COLORS).map(toVec3);
+    for (let i=0;i<MAX_COLORS;i++) { if(i<parsedColors.length) uColorsArray[i].copy(parsedColors[i]); }
+    const material = new THREE.ShaderMaterial({ vertexShader:vert, fragmentShader:frag, uniforms:{ uCanvas:{value:new THREE.Vector2(1,1)},uTime:{value:0},uSpeed:{value:params.speed},uRot:{value:new THREE.Vector2(1,0)},uColorCount:{value:parsedColors.length},uColors:{value:uColorsArray},uTransparent:{value:1},uScale:{value:params.scale},uFrequency:{value:params.frequency},uWarpStrength:{value:params.warpStrength},uPointer:{value:new THREE.Vector2(0,0)},uMouseInfluence:{value:params.mouseInfluence},uParallax:{value:params.parallax},uNoise:{value:params.noise} }, premultipliedAlpha:true, transparent:true });
+    const mesh = new THREE.Mesh(geometry,material); scene.add(mesh);
+    const renderer = new THREE.WebGLRenderer({antialias:false,powerPreference:'high-performance',alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+    renderer.setClearColor(0x000000,0);
+    renderer.domElement.style.cssText='width:100%;height:100%;display:block;';
+    cbContainer.appendChild(renderer.domElement);
+    const clock = new THREE.Clock();
+    let pointerTarget=new THREE.Vector2(0,0), pointerCurrent=new THREE.Vector2(0,0);
+    const handleResize = () => { const w=cbContainer.clientWidth||1,h=cbContainer.clientHeight||1; renderer.setSize(w,h,false); material.uniforms.uCanvas.value.set(w,h); };
+    handleResize(); window.addEventListener('resize',handleResize);
+    document.addEventListener('mousemove',(e)=>{ const rect=cbContainer.getBoundingClientRect(); pointerTarget.set(((e.clientX-rect.left)/(rect.width||1))*2-1,-(((e.clientY-rect.top)/(rect.height||1))*2-1)); },{passive:true});
+    const loop = () => { const dt=clock.getDelta(),elapsed=clock.elapsedTime; material.uniforms.uTime.value=elapsed; const deg=(params.rotation%360)+params.autoRotate*elapsed*60,rad=(deg*Math.PI)/180; material.uniforms.uRot.value.set(Math.cos(rad),Math.sin(rad)); pointerCurrent.lerp(pointerTarget,Math.min(1,dt*8)); material.uniforms.uPointer.value.copy(pointerCurrent); renderer.render(scene,camera); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+  })();
 
-                        vec3 rgb = (uTransparent > 0) ? col * a : col;
-                        gl_FragColor = vec4(rgb, a);
-                    }
-                `;
+  // Skills Modal
+  const skillsFolder = document.getElementById('folder-skills');
+  const skillsModal  = document.getElementById('skills-modal');
+  const closeBtn     = document.getElementById('close-skills-btn');
 
-                const vert = `
-                    varying vec2 vUv;
-                    void main() {
-                        vUv = uv;
-                        gl_Position = vec4(position, 1.0);
-                    }
-                `;
+  const openModal = () => {
+    if (skillsModal.onCloseTransitionEnd) {
+      skillsModal.removeEventListener('transitionend', skillsModal.onCloseTransitionEnd);
+      skillsModal.onCloseTransitionEnd = null;
+    }
+    skillsModal.style.display = 'flex';
+    skillsModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    skillsModal.offsetHeight; // Force reflow to ensure display: flex is registered
+    skillsModal.classList.add('active');
+  };
 
-                // Params mapping to React props
-                const params = {
-                    rotation: 0,
-                    speed: 0.2,
-                    colors: ["#ff5c7a", "#8a5cff", "#00ffd1"],
-                    transparent: true,
-                    autoRotate: 0,
-                    scale: 1,
-                    frequency: 1,
-                    warpStrength: 1,
-                    mouseInfluence: 1,
-                    parallax: 0.5,
-                    noise: 0.1
-                };
+  const closeModal = () => {
+    skillsModal.classList.remove('active');
+    skillsModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
 
-                const scene = new THREE.Scene();
-                const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-                const geometry = new THREE.PlaneGeometry(2, 2);
+    if (skillsModal.onCloseTransitionEnd) {
+      skillsModal.removeEventListener('transitionend', skillsModal.onCloseTransitionEnd);
+    }
 
-                const uColorsArray = Array.from({ length: MAX_COLORS }, () => new THREE.Vector3(0, 0, 0));
+    skillsModal.onCloseTransitionEnd = (e) => {
+      if (e.target === skillsModal && e.propertyName === 'opacity' && !skillsModal.classList.contains('active')) {
+        skillsModal.style.display = 'none';
+        skillsModal.removeEventListener('transitionend', skillsModal.onCloseTransitionEnd);
+        skillsModal.onCloseTransitionEnd = null;
+      }
+    };
+    skillsModal.addEventListener('transitionend', skillsModal.onCloseTransitionEnd);
+  };
 
-                const toVec3 = hex => {
-                    const h = hex.replace('#', '').trim();
-                    const v = h.length === 3
-                        ? [parseInt(h[0] + h[0], 16), parseInt(h[1] + h[1], 16), parseInt(h[2] + h[2], 16)]
-                        : [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
-                    return new THREE.Vector3(v[0] / 255, v[1] / 255, v[2] / 255);
-                };
-
-                const parsedColors = params.colors.filter(Boolean).slice(0, MAX_COLORS).map(toVec3);
-                for (let i = 0; i < MAX_COLORS; i++) {
-                    if (i < parsedColors.length) uColorsArray[i].copy(parsedColors[i]);
-                }
-
-                const material = new THREE.ShaderMaterial({
-                    vertexShader: vert,
-                    fragmentShader: frag,
-                    uniforms: {
-                        uCanvas: { value: new THREE.Vector2(1, 1) },
-                        uTime: { value: 0 },
-                        uSpeed: { value: params.speed },
-                        uRot: { value: new THREE.Vector2(1, 0) },
-                        uColorCount: { value: parsedColors.length },
-                        uColors: { value: uColorsArray },
-                        uTransparent: { value: params.transparent ? 1 : 0 },
-                        uScale: { value: params.scale },
-                        uFrequency: { value: params.frequency },
-                        uWarpStrength: { value: params.warpStrength },
-                        uPointer: { value: new THREE.Vector2(0, 0) },
-                        uMouseInfluence: { value: params.mouseInfluence },
-                        uParallax: { value: params.parallax },
-                        uNoise: { value: params.noise }
-                    },
-                    premultipliedAlpha: true,
-                    transparent: true
-                });
-
-                const mesh = new THREE.Mesh(geometry, material);
-                scene.add(mesh);
-
-                const renderer = new THREE.WebGLRenderer({
-                    antialias: false,
-                    powerPreference: 'high-performance',
-                    alpha: true
-                });
-
-                // Cap at 1.5 — cuts GPU workload by ~44% on 2x Retina screens
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-                renderer.setClearColor(0x000000, params.transparent ? 0 : 1);
-                renderer.domElement.style.width = '100%';
-                renderer.domElement.style.height = '100%';
-                renderer.domElement.style.display = 'block';
-                cbContainer.appendChild(renderer.domElement);
-
-                const clock = new THREE.Clock();
-
-                let pointerTarget = new THREE.Vector2(0, 0);
-                let pointerCurrent = new THREE.Vector2(0, 0);
-                const pointerSmooth = 8;
-
-                const handleResize = () => {
-                    const w = cbContainer.clientWidth || 1;
-                    const h = cbContainer.clientHeight || 1;
-                    renderer.setSize(w, h, false);
-                    material.uniforms.uCanvas.value.set(w, h);
-                };
-
-                handleResize();
-                window.addEventListener('resize', handleResize);
-
-                document.addEventListener('mousemove', (e) => {
-                    const rect = cbContainer.getBoundingClientRect();
-                    const x = ((e.clientX - rect.left) / (rect.width || 1)) * 2 - 1;
-                    const y = -(((e.clientY - rect.top) / (rect.height || 1)) * 2 - 1);
-                    pointerTarget.set(x, y);
-                }, { passive: true });
-
-                const loop = () => {
-                    const dt = clock.getDelta();
-                    const elapsed = clock.elapsedTime;
-                    material.uniforms.uTime.value = elapsed;
-
-                    const deg = (params.rotation % 360) + params.autoRotate * elapsed * 60;
-                    const rad = (deg * Math.PI) / 180;
-                    const c = Math.cos(rad);
-                    const s = Math.sin(rad);
-                    material.uniforms.uRot.value.set(c, s);
-
-                    const amt = Math.min(1, dt * pointerSmooth);
-                    pointerCurrent.lerp(pointerTarget, amt);
-                    material.uniforms.uPointer.value.copy(pointerCurrent);
-
-                    renderer.render(scene, camera);
-                    requestAnimationFrame(loop);
-                };
-
-                requestAnimationFrame(loop);
-
-            })();
-        });
-    </script>
+  if (skillsFolder) skillsFolder.addEventListener('click', e => { e.preventDefault(); openModal(); });
+  if (closeBtn) closeBtn.addEventListener('click', e => { e.stopPropagation(); closeModal(); });
+  skillsModal.addEventListener('click', e => { if (e.target === skillsModal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && skillsModal.classList.contains('active')) closeModal(); });
+});
+</script>
 </body>
-
 </html>

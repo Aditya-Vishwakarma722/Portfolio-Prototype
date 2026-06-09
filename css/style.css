@@ -751,22 +751,57 @@ footer {
 }
 
      
-/* -- Custom Directory layout adjustments for two folders -- */
+/* -- Custom Directory layout adjustments for five folders -- */
 #work .grid {
-    grid-template-columns: repeat(auto-fit, minmax(320px, 480px));
+    display: grid;
+    grid-template-columns: 1fr;
     justify-content: center;
-    gap: 2.5rem;
+    gap: 1.2rem;
 }
 
-#folder-codes-hub, #folder-3d {
-    min-height: 380px;
-    padding: 3rem;
+@media (min-width: 600px) {
+    #work .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 900px) {
+    #work .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    #work .grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+#folder-skills, #folder-repositories, #folder-resume, #folder-video-edits, #folder-3d {
+    min-height: 230px;
+    padding: 1.4rem 1.6rem;
     background: rgba(15, 15, 20, 0.45);
     border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 20px;
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
-#folder-codes-hub:hover {
+#folder-skills:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.25);
+}
+
+#folder-repositories:hover {
+    border-color: rgba(168, 85, 247, 0.4);
+    box-shadow: 0 25px 50px -12px rgba(168, 85, 247, 0.25);
+}
+
+#folder-resume:hover {
+    border-color: rgba(239, 68, 68, 0.4);
+    box-shadow: 0 25px 50px -12px rgba(239, 68, 68, 0.25);
+}
+
+#folder-video-edits:hover {
     border-color: rgba(37, 99, 235, 0.4);
     box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.25);
 }
@@ -776,17 +811,66 @@ footer {
     box-shadow: 0 25px 50px -12px rgba(219, 39, 119, 0.25);
 }
 
-#folder-codes-hub .card-icon, #folder-3d .card-icon {
-    transform: scale(1.15);
+#folder-skills .card-icon, #folder-repositories .card-icon, #folder-resume .card-icon, #folder-video-edits .card-icon, #folder-3d .card-icon {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 1rem;
+    border-radius: 14px;
+    transform: scale(1.1);
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-#folder-codes-hub:hover .card-icon {
-    transform: scale(1.25) rotate(-5deg);
+#folder-skills .card-content h4, #folder-repositories .card-content h4, #folder-resume .card-content h4, #folder-video-edits .card-content h4, #folder-3d .card-content h4 {
+    font-size: 1.35rem;
+    margin-bottom: 0.4rem;
+}
+
+#folder-skills .card-content p, #folder-repositories .card-content p, #folder-resume .card-content p, #folder-video-edits .card-content p, #folder-3d .card-content p {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin-bottom: 1.6rem;
+}
+
+#folder-skills:hover .card-icon {
+    transform: scale(1.2) rotate(-5deg);
+}
+
+#folder-repositories:hover .card-icon {
+    transform: scale(1.2) rotate(5deg);
+}
+
+#folder-resume:hover .card-icon {
+    transform: scale(1.2) rotate(-5deg);
+}
+
+#folder-video-edits:hover .card-icon {
+    transform: scale(1.2) rotate(-5deg);
 }
 
 #folder-3d:hover .card-icon {
-    transform: scale(1.25) rotate(5deg);
+    transform: scale(1.2) rotate(5deg);
+}
+
+/* -- New Icon Style Classes -- */
+.skills-icon {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+.repositories-icon {
+    background: rgba(168, 85, 247, 0.1);
+    color: #a855f7;
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+}
+
+.resume-icon {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
 }
 
 /* -- Video Edits card icon style inside Get in Touch -- */
@@ -794,4 +878,141 @@ footer {
     background: rgba(37, 99, 235, 0.1);
     color: var(--color-light-blue);
     border: 1px solid rgba(37, 99, 235, 0.25);
+}
+
+/* -- Skills Modal Styling -- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(5, 5, 8, 0.75);
+    backdrop-filter: blur(16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-box {
+    width: min(540px, 90%);
+    background: rgba(15, 15, 22, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 50px rgba(59, 130, 246, 0.08);
+    border-radius: 28px;
+    padding: 2.2rem 2.5rem;
+    position: relative;
+    transform: scale(0.92) translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.active .modal-box {
+    transform: scale(1) translateY(0);
+}
+
+.modal-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: rotate(90deg);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.modal-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.modal-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(120deg, #fff 0%, #a5c3f7 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.skills-categories {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+.skills-cat h4 {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.skills-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.skill-tag {
+    font-size: 0.85rem;
+    padding: 0.45rem 1rem;
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.85);
+    transition: all 0.25s ease;
+    font-weight: 400;
+}
+
+.skill-tag:hover {
+    background: rgba(59, 130, 246, 0.08);
+    border-color: rgba(59, 130, 246, 0.35);
+    color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.15);
 }
