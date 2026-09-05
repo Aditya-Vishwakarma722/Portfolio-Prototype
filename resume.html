@@ -28,12 +28,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;
   padding:1.2rem 5%;backdrop-filter:blur(20px);
   background:rgba(7,7,10,0.7);border-bottom:1px solid var(--border)}
 .nav-logo{font-family:var(--mono);font-size:0.8rem;color:var(--cyan);letter-spacing:2px}
-.nav-links{display:flex;gap:2rem}
+.nav-links{display:flex;align-items:center;gap:1.8rem}
 .nav-links a{font-size:0.75rem;color:var(--muted);text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;transition:color 0.2s;font-family:var(--mono)}
 .nav-links a:hover{color:var(--text)}
-.nav-print{display:inline-flex;align-items:center;gap:0.4rem;padding:0.4rem 0.9rem;border:1px solid rgba(6,182,212,0.3);border-radius:4px;color:var(--cyan);font-size:0.72rem;cursor:pointer;text-decoration:none;transition:all 0.2s;font-family:var(--mono);background:rgba(6,182,212,0.05)}
-.nav-print:hover{background:rgba(6,182,212,0.1);border-color:var(--cyan)}
-.nav-print svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
+.nav-print{display:inline-flex;align-items:center;gap:0.55rem;padding:0.45rem 1rem;border:1px solid rgba(6,182,212,0.4);border-radius:6px;color:#fff;font-size:0.75rem;font-weight:600;cursor:pointer;text-decoration:none;transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);font-family:var(--mono);background:linear-gradient(135deg, rgba(6,182,212,0.15) 0%, rgba(124,58,237,0.15) 100%);box-shadow:0 0 15px rgba(6,182,212,0.15)}
+.nav-print:hover{background:linear-gradient(135deg, rgba(6,182,212,0.3) 0%, rgba(124,58,237,0.3) 100%);border-color:var(--cyan);color:#fff;transform:translateY(-2px);box-shadow:0 4px 20px rgba(6,182,212,0.35)}
+.nav-print svg{width:14px;height:14px;stroke:var(--cyan);stroke-width:2.2;fill:none;transition:transform 0.2s}
+.nav-print:hover svg{transform:translateY(2px);stroke:#fff}
 .portfolio-back-box{position:fixed;top:5.5rem;right:5%;z-index:90;
   display:inline-flex;align-items:center;gap:0.6rem;padding:0.6rem 1rem;
   background:rgba(15,15,20,0.92);backdrop-filter:blur(15px);
@@ -160,6 +161,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;
     <a href="#education">education</a>
     <a href="#skills">skills</a>
     <a href="#projects">projects</a>
+    <a href="Aditya_Vishwakarma_Resume.pdf" download="Aditya_Vishwakarma_Resume.pdf" class="nav-print download-resume-btn">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download Resume
+    </a>
   </div>
 </nav>
 
@@ -230,19 +235,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;
       <div class="sidebar-label">quick skills</div>
       <div>
         <span class="skill-pill highlight">Java</span>
-        <span class="skill-pill highlight">C</span>
-        <span class="skill-pill highlight">C++</span>
         <span class="skill-pill highlight">Spring Boot</span>
-        <span class="skill-pill highlight">Unreal Engine</span>
+        <span class="skill-pill highlight">Spring Security</span>
+        <span class="skill-pill highlight">REST APIs</span>
+        <span class="skill-pill highlight">MongoDB</span>
         <span class="skill-pill highlight">DSA</span>
-        <span class="skill-pill">SQL</span>
-        <span class="skill-pill">MongoDB</span>
+        <span class="skill-pill">C / C++</span>
+        <span class="skill-pill">Python</span>
+        <span class="skill-pill">MySQL</span>
         <span class="skill-pill">Git</span>
+        <span class="skill-pill">Maven</span>
         <span class="skill-pill">OOP</span>
         <span class="skill-pill">Blender</span>
+        <span class="skill-pill">Unreal Engine 5</span>
         <span class="skill-pill">After Effects</span>
-        <span class="skill-pill">IntelliJ</span>
-        <span class="skill-pill">DBMS</span>
+        <span class="skill-pill">TypeScript</span>
+        <span class="skill-pill">Vercel</span>
       </div>
     </div>
 
@@ -267,7 +275,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;
         <div class="section-line"></div>
       </div>
       <p class="objective-text">
-        Focused and motivated Computer Science student aiming for roles such as <strong>Java Backend Developer</strong>, <strong>Software Developer</strong>, or <strong>Game Developer</strong>. Strong in <strong>Data Structures and Algorithms</strong>, actively solving problems on online platforms, and deeply interested in <strong>gaming and game development</strong>.
+        Computer Science undergraduate focused on <strong>Java backend development</strong> and software engineering. Hands-on experience building RESTful applications with <strong>Spring Boot, Spring Security, MongoDB</strong> and Maven, with practical knowledge of authentication, RBAC, CRUD APIs, transactions and layered architecture. Strong foundation in <strong>DSA, OOP, Java Collections</strong>, exception handling and concurrency.
       </p>
     </section>
 
@@ -280,11 +288,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;
       </div>
       <div class="edu-card">
         <div class="edu-degree">Bachelor of Technology — Computer Science & Engineering</div>
-        <div class="edu-school">Aditya College of Engineering & Technology (ACET), Surampalem, Andhra Pradesh</div>
+        <div class="edu-school">Aditya College of Engineering & Technology (ACET), Surampalem</div>
         <div class="edu-meta">
           <span class="edu-chip">2024 – 2028 (Expected)</span>
           <span class="edu-chip">3rd Year</span>
           <span class="edu-chip">B.Tech CSE</span>
+          <span class="edu-chip">CGPA: 7.9</span>
         </div>
       </div>
     </section>
@@ -298,38 +307,69 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;
       </div>
       <div class="skills-grid">
         <div class="skill-group">
-          <div class="skill-group-label">programming languages</div>
+          <div class="skill-group-label">languages</div>
           <div class="skill-items">
             <span class="skill-item">Java</span>
             <span class="skill-item">C</span>
             <span class="skill-item">C++</span>
+            <span class="skill-item">Python</span>
           </div>
         </div>
         <div class="skill-group">
-          <div class="skill-group-label">database</div>
+          <div class="skill-group-label">backend &amp; frameworks</div>
           <div class="skill-items">
-            <span class="skill-item">SQL</span>
+            <span class="skill-item">Spring Boot</span>
+            <span class="skill-item">Spring MVC</span>
+            <span class="skill-item">Spring Security</span>
+            <span class="skill-item">REST APIs</span>
+            <span class="skill-item">Hibernate/JPA</span>
+            <span class="skill-item">Lombok</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label">databases &amp; data access</div>
+          <div class="skill-items">
             <span class="skill-item">MongoDB</span>
+            <span class="skill-item">MySQL</span>
+            <span class="skill-item">Spring Data MongoDB</span>
+            <span class="skill-item">DBRef</span>
+            <span class="skill-item">CRUD APIs</span>
+            <span class="skill-item">MongoDB Transactions</span>
           </div>
         </div>
         <div class="skill-group">
           <div class="skill-group-label">core CS concepts</div>
           <div class="skill-items">
-            <span class="skill-item">Data Structures</span>
-            <span class="skill-item">Algorithms</span>
+            <span class="skill-item">Data Structures &amp; Algorithms</span>
             <span class="skill-item">OOP</span>
+            <span class="skill-item">Collections</span>
+            <span class="skill-item">Multithreading / Concurrency</span>
+            <span class="skill-item">Exception Handling</span>
             <span class="skill-item">DBMS</span>
-            <span class="skill-item">Spring Boot</span>
           </div>
         </div>
         <div class="skill-group">
-          <div class="skill-group-label">tools & software</div>
+          <div class="skill-group-label">developer tools</div>
           <div class="skill-items">
-            <span class="skill-item">After Effects</span>
-            <span class="skill-item">Blender</span>
-            <span class="skill-item">IntelliJ IDEA</span>
             <span class="skill-item">Git</span>
-            <span class="skill-item">Unreal Engine</span>
+            <span class="skill-item">GitHub</span>
+            <span class="skill-item">Maven</span>
+            <span class="skill-item">Postman</span>
+            <span class="skill-item">IntelliJ IDEA</span>
+            <span class="skill-item">VS Code</span>
+            <span class="skill-item">PowerShell / Shell</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label">web &amp; creative</div>
+          <div class="skill-items">
+            <span class="skill-item">HTML</span>
+            <span class="skill-item">CSS</span>
+            <span class="skill-item">TypeScript</span>
+            <span class="skill-item">Vercel</span>
+            <span class="skill-item">Blender</span>
+            <span class="skill-item">Unreal Engine 5</span>
+            <span class="skill-item">Adobe After Effects</span>
           </div>
         </div>
       </div>
@@ -339,44 +379,48 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;
     <section id="projects">
       <div class="section-header">
         <span class="section-num">04</span>
-        <h2 class="section-title">Projects & Practice</h2>
+        <h2 class="section-title">Featured Projects</h2>
         <div class="section-line"></div>
       </div>
       <div class="proj-item">
-        <div class="proj-title">Academic & Logic Programs — C / Java</div>
-        <div class="proj-desc">Developed a range of academic programs and logic-based solutions using C and Java. Focus on clean algorithm design, efficient data structures, and object-oriented principles applied to real problem scenarios.</div>
+        <div class="proj-title">SkillBridge — Java / Spring Boot / MongoDB | GitHub</div>
+        <div class="proj-desc">Collaborative platform bridging students and industry projects built using Java 21 and Spring Boot. Implemented Role-Based Access Control (RBAC) for Students and Industry partners, BCrypt authentication modules with Spring Security, and scalable MongoDB schemas for project listings, applications, and profiles.</div>
       </div>
       <div class="proj-item">
-        <div class="proj-title">DSA Problem Solving — Competitive Platforms</div>
-        <div class="proj-desc">Regularly practising Data Structures and Algorithms on competitive programming platforms. Strong grasp of algorithm design and optimization — covering sorting, searching, recursion, dynamic programming, and graph traversal.</div>
+        <div class="proj-title">Journal Prototype — Java / Spring Boot / MongoDB | GitHub</div>
+        <div class="proj-desc">RESTful journal management service with Java 21, Spring Boot 4.0.7, Spring Security, MongoDB, and Maven. Features user registration, BCrypt password hashing, HTTP Basic Auth, Role-Based Access Control (USER/ADMIN), authenticated CRUD APIs with ownership isolation, and multi-document transactions (@Transactional).</div>
       </div>
       <div class="proj-item">
-        <div class="proj-title">3D Assets & Animations — Blender / After Effects</div>
-        <div class="proj-desc">Created basic 3D models, animations, and visual effects using Blender and After Effects. Exploring procedural shading, rendering pipelines, and motion graphics as a creative extension alongside core CS work.</div>
+        <div class="proj-title">Personal Portfolio — HTML / CSS / TypeScript / Vercel | GitHub</div>
+        <div class="proj-desc">Developed and deployed a responsive portfolio showcasing software projects, technical skills, interactive resume, and Blender 3D art work; deployed with Vercel.</div>
+      </div>
+      <div class="proj-item">
+        <div class="proj-title">Java DSA & Core Programming Practice | GitHub</div>
+        <div class="proj-desc">Maintains structured Java practice covering OOP, Collections, Multithreading, Exception Handling, and DSA topics including arrays, strings, linked lists, stacks, queues, recursion, and searching/sorting algorithms.</div>
       </div>
     </section>
 
-    <!-- ADDITIONAL -->
+    <!-- EXPERIENCE & CERTIFICATIONS -->
     <section id="additional">
       <div class="section-header">
         <span class="section-num">05</span>
-        <h2 class="section-title">Additional Learning</h2>
+        <h2 class="section-title">Experience &amp; Certifications</h2>
         <div class="section-line"></div>
       </div>
       <div class="add-grid">
         <div class="add-card">
           <div class="add-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
           </div>
-          <div class="add-title">Japanese Language (JLPT)</div>
-          <div class="add-desc">Preparing for the Japanese Language Proficiency Test. Currently at beginner level, building vocabulary and grammar foundations.</div>
+          <div class="add-title">Web Development Intern — Future Interns</div>
+          <div class="add-desc">Developed responsive web projects and contributed to client-oriented website design and implementation tasks. Participated in project presentations and live pitching, strengthening frontend and communication skills.</div>
         </div>
         <div class="add-card">
           <div class="add-icon">
-            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           </div>
-          <div class="add-title">Java Backend & Game Dev</div>
-          <div class="add-desc">Exploring Java backend systems, REST APIs, and game development fundamentals (including Unreal Engine) — working toward building full-stack and game projects.</div>
+          <div class="add-title">Certifications &amp; Achievements</div>
+          <div class="add-desc">Future Interns Internship Certificate &amp; Letter of Recommendation (LOR). Regular LeetCode problem solving across core DSA topics. Japanese Language (Beginner).</div>
         </div>
       </div>
     </section>

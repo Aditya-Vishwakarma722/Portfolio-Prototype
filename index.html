@@ -231,92 +231,134 @@
   .modal-overlay {
     display: none; position: fixed; inset: 0;
     background: rgba(0,0,0,0);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     z-index: 999; align-items: center; justify-content: center;
-    padding: 1rem;
+    padding: 1.5rem;
     opacity: 0;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .modal-overlay.active {
     opacity: 1;
-    background: rgba(0,0,0,0.65);
+    background: rgba(4, 4, 10, 0.75);
   }
   .modal-box {
-    position: relative; max-width: 560px; width: 100%;
-    background: rgba(14,14,26,0.96);
-    border: 1px solid rgba(136,170,255,0.18);
+    position: relative; max-width: 920px; width: 95%;
+    background: rgba(13, 13, 24, 0.94);
+    border: 1px solid rgba(136,170,255,0.2);
     border-radius: 24px;
     padding: 0;
     overflow: hidden;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(136,170,255,0.08);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 30px rgba(136,170,255,0.08);
     
-    /* Animation start / close state */
     opacity: 0;
-    transform: translateY(20px) scale(0.96);
-    transition: opacity 0.22s cubic-bezier(0.25, 1, 0.5, 1), transform 0.22s cubic-bezier(0.25, 1, 0.5, 1);
+    transform: translateY(24px) scale(0.96);
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform, opacity;
   }
   .modal-overlay.active .modal-box {
     opacity: 1;
     transform: translateY(0) scale(1);
-    transition: opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: opacity 0.35s cubic-bezier(0.34, 1.4, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
   }
 
-  /* Modal top accent bar */
   .modal-accent {
     height: 3px;
-    background: linear-gradient(90deg, var(--ac), var(--ac2), var(--ac3));
+    background: linear-gradient(90deg, var(--ac), var(--ac2), var(--ac3), #a855f7);
   }
 
-  /* Modal header */
   .modal-header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 1.6rem 1.8rem 1.2rem;
+    padding: 1.4rem 2rem 1.1rem;
     border-bottom: 1px solid rgba(255,255,255,0.06);
   }
   .modal-header-left { display: flex; align-items: center; gap: 1rem; }
   .modal-icon {
-    width: 46px; height: 46px; border-radius: 12px;
+    width: 44px; height: 44px; border-radius: 12px;
     background: rgba(136,170,255,0.12);
-    border: 1px solid rgba(136,170,255,0.2);
+    border: 1px solid rgba(136,170,255,0.22);
     color: var(--ac);
     display: flex; align-items: center; justify-content: center;
   }
   .modal-icon svg { width: 22px; height: 22px; }
-  .modal-title { font-size: 1.15rem; font-weight: 700; color: var(--text-primary); }
-  .modal-subtitle { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.1rem; letter-spacing: 0.05em; }
+  .modal-title { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.3px; }
+  .modal-subtitle { font-size: 0.73rem; color: var(--text-secondary); margin-top: 0.15rem; letter-spacing: 0.04em; }
   .modal-close {
     width: 32px; height: 32px; border-radius: 8px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.08);
-    color: var(--text-secondary); font-size: 1rem;
+    color: var(--text-secondary); font-size: 0.95rem;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s, color 0.2s;
+    transition: all 0.2s ease;
   }
-  .modal-close:hover { background: rgba(255,92,122,0.15); color: var(--ac2); border-color: rgba(255,92,122,0.3); }
+  .modal-close:hover { background: rgba(255,92,122,0.15); color: var(--ac2); border-color: rgba(255,92,122,0.3); transform: rotate(90deg); }
 
-  /* Modal body */
-  .modal-body { padding: 1.6rem 1.8rem 1.8rem; display: flex; flex-direction: column; gap: 1.4rem; }
+  /* Horizontal Filter Bar */
+  .modal-filter-bar {
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.8rem 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    overflow-x: auto; scrollbar-width: none;
+    background: rgba(0,0,0,0.2);
+  }
+  .modal-filter-bar::-webkit-scrollbar { display: none; }
+  .skill-tab-btn {
+    padding: 0.38rem 0.9rem; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    color: var(--text-secondary); font-size: 0.73rem; font-weight: 600;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .skill-tab-btn:hover {
+    color: var(--text-primary); border-color: rgba(136,170,255,0.3); background: rgba(136,170,255,0.08);
+  }
+  .skill-tab-btn.active {
+    background: rgba(136,170,255,0.18);
+    border-color: rgba(136,170,255,0.4);
+    color: var(--ac); box-shadow: 0 0 12px rgba(136,170,255,0.2);
+  }
+
+  /* Modal body - Horizontal 2-column Grid */
+  .modal-body {
+    padding: 1.6rem 2rem 2rem;
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 1.4rem 2rem;
+    max-height: min(520px, calc(80vh - 120px));
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(136,170,255,0.3) transparent;
+  }
+  .modal-body::-webkit-scrollbar { width: 6px; }
+  .modal-body::-webkit-scrollbar-thumb { background: rgba(136,170,255,0.25); border-radius: 4px; }
+  .modal-body::-webkit-scrollbar-thumb:hover { background: rgba(136,170,255,0.4); }
+
+  .skills-cat {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 14px; padding: 1.1rem 1.2rem;
+  }
+  .skills-cat.dimmed { opacity: 0.25; transform: scale(0.98); }
   .skills-cat h4 {
-    font-size: 0.68rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.15em;
-    color: var(--text-secondary); margin-bottom: 0.7rem;
+    font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--text-secondary); margin-bottom: 0.8rem;
     display: flex; align-items: center; gap: 0.5rem;
   }
   .skills-cat h4::after {
     content: ''; flex: 1; height: 1px;
-    background: rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.07);
   }
-  .skills-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .skills-tags { display: flex; flex-wrap: wrap; gap: 0.45rem; }
   .skill-tag {
-    display: flex; align-items: center; gap: 0.4rem;
-    padding: 0.35rem 0.9rem;
-    border-radius: 8px; font-size: 0.82rem; font-weight: 500;
-    transition: background 0.2s, border-color 0.2s, transform 0.2s;
-    cursor: default;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.32rem 0.8rem;
+    border-radius: 8px; font-size: 0.78rem; font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: default; will-change: transform;
   }
-  .skill-tag:hover { transform: translateY(-2px); }
+  .skill-tag:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
   .skill-tag.lang    { background: rgba(136,170,255,0.1);  border: 1px solid rgba(136,170,255,0.22); color: var(--ac); }
   .skill-tag.lang:hover { background: rgba(136,170,255,0.18); }
   .skill-tag.fw      { background: rgba(0,255,209,0.08);   border: 1px solid rgba(0,255,209,0.2);   color: var(--ac3); }
@@ -325,6 +367,10 @@
   .skill-tag.db:hover   { background: rgba(255,92,122,0.15); }
   .skill-tag.creative{ background: rgba(180,130,255,0.08); border: 1px solid rgba(180,130,255,0.2); color: #c4a0ff; }
   .skill-tag.creative:hover { background: rgba(180,130,255,0.15); }
+  .skill-tag.cs      { background: rgba(249,115,22,0.08);  border: 1px solid rgba(249,115,22,0.2);  color: #fb923c; }
+  .skill-tag.cs:hover   { background: rgba(249,115,22,0.15); }
+  .skill-tag.tool    { background: rgba(245,158,11,0.08);  border: 1px solid rgba(245,158,11,0.2);  color: #fbbf24; }
+  .skill-tag.tool:hover { background: rgba(245,158,11,0.15); }
 
   /* MOBILE */
   @media (max-width: 600px) {
@@ -347,8 +393,10 @@
     .grid { grid-template-columns: 1fr; gap: 1rem; }
     .file-list .card-content { gap: 0.6rem; }
     .file-list .card-content h4 { min-width: 70px; font-size: 0.8rem; }
-    .modal-box { border-radius: 18px; }
+    .modal-box { border-radius: 18px; width: 98%; }
     .modal-header, .modal-body { padding-left: 1.2rem; padding-right: 1.2rem; }
+    .modal-body { grid-template-columns: 1fr; gap: 1.2rem; }
+    .modal-filter-bar { padding: 0.6rem 1.2rem; }
     footer { padding: 1.8rem 1.2rem; font-size: 0.78rem; }
   }
   @media (max-width: 400px) {
@@ -533,13 +581,25 @@
         </div>
         <div>
           <div class="modal-title">Technical Skills</div>
-          <div class="modal-subtitle">Languages · Frameworks · Tools</div>
+          <div class="modal-subtitle">Languages · Backend · Databases · CS Core · Tools · Creative</div>
         </div>
       </div>
       <button class="modal-close" id="close-skills-btn" aria-label="Close modal">✕</button>
     </div>
+
+    <!-- Horizontal Filter Tabs -->
+    <div class="modal-filter-bar">
+      <button class="skill-tab-btn active" data-cat="all">All Skills</button>
+      <button class="skill-tab-btn" data-cat="lang">Languages</button>
+      <button class="skill-tab-btn" data-cat="fw">Backend</button>
+      <button class="skill-tab-btn" data-cat="db">Databases</button>
+      <button class="skill-tab-btn" data-cat="cs">Core CS</button>
+      <button class="skill-tab-btn" data-cat="tool">Tools</button>
+      <button class="skill-tab-btn" data-cat="creative">Web &amp; Creative</button>
+    </div>
+
     <div class="modal-body">
-      <div class="skills-cat">
+      <div class="skills-cat" data-category="lang">
         <h4>Languages</h4>
         <div class="skills-tags">
           <span class="skill-tag lang">Java</span>
@@ -548,27 +608,62 @@
           <span class="skill-tag lang">Python</span>
         </div>
       </div>
-      <div class="skills-cat">
-        <h4>Frameworks &amp; Core</h4>
+      <div class="skills-cat" data-category="fw">
+        <h4>Backend &amp; Frameworks</h4>
         <div class="skills-tags">
           <span class="skill-tag fw">Spring Boot</span>
-          <span class="skill-tag fw">OOPs</span>
-          <span class="skill-tag fw">DBMS</span>
+          <span class="skill-tag fw">Spring MVC</span>
+          <span class="skill-tag fw">Spring Security</span>
+          <span class="skill-tag fw">REST APIs</span>
+          <span class="skill-tag fw">Hibernate/JPA</span>
+          <span class="skill-tag fw">Lombok</span>
         </div>
       </div>
-      <div class="skills-cat">
-        <h4>Databases</h4>
+      <div class="skills-cat" data-category="db">
+        <h4>Databases &amp; Data Access</h4>
         <div class="skills-tags">
-          <span class="skill-tag db">MySQL</span>
           <span class="skill-tag db">MongoDB</span>
+          <span class="skill-tag db">MySQL</span>
+          <span class="skill-tag db">Spring Data MongoDB</span>
+          <span class="skill-tag db">DBRef</span>
+          <span class="skill-tag db">CRUD APIs</span>
+          <span class="skill-tag db">MongoDB Transactions</span>
         </div>
       </div>
-      <div class="skills-cat">
-        <h4>Creative</h4>
+      <div class="skills-cat" data-category="cs">
+        <h4>Core CS Concepts</h4>
         <div class="skills-tags">
-          <span class="skill-tag creative">Blender 3D</span>
-          <span class="skill-tag creative">After Effects</span>
-          <span class="skill-tag creative">Unreal Engine</span>
+          <span class="skill-tag cs">Data Structures &amp; Algorithms</span>
+          <span class="skill-tag cs">OOP</span>
+          <span class="skill-tag cs">Collections</span>
+          <span class="skill-tag cs">Multithreading &amp; Concurrency</span>
+          <span class="skill-tag cs">Exception Handling</span>
+          <span class="skill-tag cs">DBMS</span>
+        </div>
+      </div>
+      <div class="skills-cat" data-category="tool">
+        <h4>Developer Tools</h4>
+        <div class="skills-tags">
+          <span class="skill-tag tool">Git</span>
+          <span class="skill-tag tool">GitHub</span>
+          <span class="skill-tag tool">Maven</span>
+          <span class="skill-tag tool">Postman</span>
+          <span class="skill-tag tool">IntelliJ IDEA</span>
+          <span class="skill-tag tool">VS Code</span>
+          <span class="skill-tag tool">PowerShell</span>
+          <span class="skill-tag tool">Shell</span>
+        </div>
+      </div>
+      <div class="skills-cat" data-category="creative">
+        <h4>Web &amp; Creative</h4>
+        <div class="skills-tags">
+          <span class="skill-tag creative">HTML</span>
+          <span class="skill-tag creative">CSS</span>
+          <span class="skill-tag creative">TypeScript</span>
+          <span class="skill-tag creative">Vercel</span>
+          <span class="skill-tag creative">Blender</span>
+          <span class="skill-tag creative">Unreal Engine 5</span>
+          <span class="skill-tag creative">Adobe After Effects</span>
         </div>
       </div>
     </div>
@@ -686,6 +781,27 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     skillsModal.addEventListener('transitionend', skillsModal.onCloseTransitionEnd);
   };
+
+  // Tab filtering logic
+  const tabBtns  = skillsModal ? skillsModal.querySelectorAll('.skill-tab-btn') : [];
+  const skillCats = skillsModal ? skillsModal.querySelectorAll('.skills-cat') : [];
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.cat;
+      skillCats.forEach(c => {
+        if (cat === 'all' || c.dataset.category === cat) {
+          c.classList.remove('dimmed');
+          c.style.display = 'block';
+        } else {
+          c.classList.add('dimmed');
+          c.style.display = 'none';
+        }
+      });
+    });
+  });
 
   if (skillsFolder) skillsFolder.addEventListener('click', e => { e.preventDefault(); openModal(); });
   if (closeBtn) closeBtn.addEventListener('click', e => { e.stopPropagation(); closeModal(); });
